@@ -23,8 +23,14 @@ Gem::Specification.new do |spec|
                    'Gemfile',
                    'Rakefile']
 
+  spec.add_development_dependency 'codecov', '~> 0.1'
+  spec.add_development_dependency 'rails', '~> 6.0.5.1'
+  spec.add_development_dependency 'rake', '~> 13.0'
+  spec.add_development_dependency 'rspec', '~> 3.6'
+  spec.add_development_dependency 'rspec-rails', '~> 5.1.2'
   spec.add_development_dependency 'prettier', '~> 3.1.2'
   spec.add_development_dependency 'rubocop', '~> 1.30'
   spec.add_development_dependency 'rubocop-performance', '~> 1.14'
   spec.add_development_dependency 'rubocop-rspec', '~> 2.12'
+  spec.add_development_dependency 'simplecov', '~> 0.16'
 end
