@@ -5,7 +5,7 @@ require File.expand_path('lib/consolidatable/version', __dir__)
 Gem::Specification.new do |spec|
   spec.name     = 'consolidatable'
   spec.version  = Consolidatable::VERSION
-  spec.authors  = ['Tim Lawrenz']
+  spec.authors  = ['Give Lively']
   spec.summary  = 'Consolidate and Cache'
   spec.homepage = 'https://github.com/givelively/consolidatable'
   spec.license  = 'MIT'
@@ -24,6 +24,9 @@ Gem::Specification.new do |spec|
                    'Rakefile']
 
   spec.add_development_dependency 'codecov', '~> 0.1'
+  spec.add_development_dependency 'database_cleaner', '~> 2.0.1'
+  spec.add_development_dependency 'factory_bot', '~> 6.2.1'
+  spec.add_development_dependency 'pg', '~> 1.4.1'
   spec.add_development_dependency 'prettier', '~> 3.1.2'
   spec.add_development_dependency 'rails', '~> 6.0.5.1'
   spec.add_development_dependency 'rake', '~> 13.0'
