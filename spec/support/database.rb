@@ -7,7 +7,7 @@ require 'yaml'
 
 FileUtils.mkdir_p 'tmp'
 
-db_engine = ENV.fetch('DB', 'mysql')
+db_engine = ENV.fetch('DB', 'postgres')
 database_config_file = File.join(__dir__, 'database.yml')
 
 raise <<-MSG unless File.exist?(database_config_file)
