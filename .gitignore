@@ -9,8 +9,10 @@
 /test/tmp/
 /test/version_tmp/
 /tmp/
+*.swp
 
 spec/dummy/log/
+spec/support/database.yml
 
 # Used by dotenv library to load environment variables.
 # .env
