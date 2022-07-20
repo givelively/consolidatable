@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_record'
-require 'database_cleaner'
-require 'erb'
-require 'yaml'
-
 FileUtils.mkdir_p 'tmp'
 
 db_engine = ENV.fetch('DB', 'postgres')
