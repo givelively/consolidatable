@@ -12,6 +12,14 @@ RSpec.describe Consolidatable do
   end
 
   describe 'consolidating a string' do
+    let(:present) { class_double(Present).as_stubbed_const(transfer_nested_constants: true) }
+
+    before do
+      Organization.send(:consolidates, :longest_name_calculator,
+                        { as: :longest_present_name,
+                          type: :string })
+    end
+
     it 'provides a method to retrieve the consolidated value' do
       expect(Organization.new).to respond_to(:longest_present_name)
     end
@@ -28,14 +36,19 @@ RSpec.describe Consolidatable do
 
     context 'when there is no data' do
       it 'returns nil' do
+        allow(present).to receive(:longest_name_for)
         expect(Organization.create.longest_present_name).to be_nil
       end
     end
   end
 
   describe 'with minimal setup' do
+    before do
+      Organization.send(:consolidates, :avg_price)
+    end
+
     it 'provides a method with predicable name to access to the consolidated value' do
-      expect(Organization.new).to respond_to(:consolidated_heaviest_present)
+      expect(Organization.new).to respond_to(:consolidated_avg_price)
     end
 
     it 'picks a default type for the consolidation' do

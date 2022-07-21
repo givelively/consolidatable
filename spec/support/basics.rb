@@ -5,27 +5,26 @@ require 'database_cleaner'
 require 'erb'
 require 'yaml'
 
-class Organization < ActiveRecord::Base
+class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
+end
+
+class Organization < ApplicationRecord
   include Consolidatable
 
   has_many :presents
 
-  consolidates :longest_present_name_calculator, as: :longest_present_name, type: :string
-  def longest_present_name_calculator
-    presents.all.map(&:name).sort(&:length).first
+  def self.longest_name_calculator
+    Present.longest_name_for(self)
   end
+end
 
-  consolidates :heaviest_present
-  def heaviest_present
-    presents.maximum(:weight)
-  end
+class Present < ApplicationRecord
+  belongs_to :organization
 
+  #   t.string 'name'
   #   t.float 'weight'
   #   t.integer 'price'
   #   t.boolean 'cute'
   #   t.datetime 'produced_at'
-end
-
-class Present < ActiveRecord::Base
-  belongs_to :organization
 end
