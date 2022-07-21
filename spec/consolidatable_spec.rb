@@ -15,8 +15,8 @@ RSpec.describe Consolidatable do
     let(:present) { class_double(Present).as_stubbed_const(transfer_nested_constants: true) }
 
     before do
-      Organization.send(:consolidates, :longest_name_calculator,
-                        { as: :longest_present_name,
+      Organization.send(:consolidates, :longest_present_name,
+                        { as: :consolidated_present_name,
                           type: :string })
     end
 
@@ -26,29 +26,30 @@ RSpec.describe Consolidatable do
 
     context 'when accessing the class' do
       it 'provides a scope based on the name' do
-        expect(Organization).to respond_to(:with_longest_present_name)
+        expect(Organization).to respond_to(:with_consolidated_present_name)
       end
 
       it 'provides a scope to include the consolidated values' do
-        expect(Organization.with_longest_present_name.to_sql).to include('AS longest_present_name')
+        expect(Organization.with_consolidated_present_name.to_sql)
+          .to include('AS consolidated_present_name')
       end
     end
 
     context 'when there is no data' do
       it 'returns nil' do
-        allow(present).to receive(:longest_name_for)
-        expect(Organization.create.longest_present_name).to be_nil
+        expect(present).to receive(:longest_name_for).and_return(nil)
+        expect(Organization.new.longest_present_name).to be_nil
       end
     end
   end
 
   describe 'with minimal setup' do
     before do
-      Organization.send(:consolidates, :avg_price)
+      Organization.send(:consolidates, :heaviest_present)
     end
 
     it 'provides a method with predicable name to access to the consolidated value' do
-      expect(Organization.new).to respond_to(:consolidated_avg_price)
+      expect(Organization.new).to respond_to(:consolidated_heaviest_present)
     end
 
     it 'picks a default type for the consolidation' do

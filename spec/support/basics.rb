@@ -14,17 +14,35 @@ class Organization < ApplicationRecord
 
   has_many :presents
 
-  def self.longest_name_calculator
+  def longest_present_name
     Present.longest_name_for(self)
+  end
+
+  def heaviest_present
+    Present.heaviest_for(self)
+  end
+
+  def avg_present_price
+    Present.avg_price_for(self)
+  end
+
+  def all_cute?
+    Present.all_cute?(self)
+  end
+
+  def oldest_present
+    Present.oldest_present_for(self)
   end
 end
 
 class Present < ApplicationRecord
   belongs_to :organization
 
-  #   t.string 'name'
-  #   t.float 'weight'
-  #   t.integer 'price'
-  #   t.boolean 'cute'
-  #   t.datetime 'produced_at'
+  def self.longest_name_for(obj); end
+  def self.heaviest_for(obj)
+    obj.presents.maximum(:weight)
+  end
+  def self.avh_price_for(obj); end
+  def self.all_cute?(obj); end
+  def self.oldest_present_for(obj); end
 end
