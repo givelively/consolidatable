@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Consolidatable
   module Base
     def consolidates(calculator, options = {})
       as             = options[:as]&.id2name || "consolidated_#{calculator}"
       type           = options[:type] || :float
-      not_older_than = Time.zone.now - (options[:max_age] || 1.day)
+      not_older_than = Time.current - (options[:max_age] || 1.day)
 
       @@consolidate_methods ||= []
       @@consolidate_methods << as

@@ -7,7 +7,7 @@ module Consolidatable
     model_class.class_eval do
       extend Base
 
-      has_many :consolidations, class_name: 'Consolidatable::Consolidation',
+      has_many :consolidations, class_name: '::Consolidatable::Consolidation',
                                 as: :consolidatable,
                                 dependent: :destroy
     end
