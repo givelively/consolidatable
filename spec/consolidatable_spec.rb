@@ -77,7 +77,7 @@ RSpec.describe Consolidatable do
   let(:present) { class_double(Present).as_stubbed_const(transfer_nested_constants: true) }
 
   it 'has a version number' do
-    expect(Consolidatable::VERSION).to be_present
+    expect(Consolidatable::VERSION).to be_a(String)
   end
 
   describe 'A Consolidatable' do
