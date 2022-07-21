@@ -67,7 +67,7 @@ RSpec.shared_examples 'consolidates types' do |type, computer|
 
   context 'when there is no data' do
     it 'returns nil' do
-      expect(present).to receive(computer).and_return(nil)
+      allow(present).to receive(computer).and_return(nil)
       expect(Child.new.send(computer)).to be_nil
     end
   end
