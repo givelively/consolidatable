@@ -44,5 +44,25 @@ RSpec.describe Consolidatable do
 
       expect(organization.consolidated_heaviest_present).to be_a(Float)
     end
+
+    it 'creates a new consolidation when called for the first time' do
+      organization = Organization.create
+      organization.presents.create(weight: 300)
+
+      expect { organization.consolidated_heaviest_present }
+        .to change(organization.consolidations, :count)
+        .from(0).to(1)
+    end
+
+    context 'with fresh consolidations' do
+      it 'does not create a new consolidation when called' do
+        organization = Organization.create
+        organization.presents.create(weight: 300)
+        organization.consolidated_heaviest_present
+
+        expect { organization.consolidated_heaviest_present }
+          .not_to change(organization.consolidations, :count)
+      end
+    end
   end
 end
