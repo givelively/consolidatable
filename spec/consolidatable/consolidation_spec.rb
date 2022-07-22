@@ -32,7 +32,7 @@ RSpec.describe Consolidatable::Consolidation do
 
   context 'when calling value' do
     subject(:consolidation) do
-      described_class.new(float_value: 17.3,
+      described_class.new(float_value: 17,
                           integer_value: 42,
                           boolean_value: true,
                           string_value: 'seventeen point three',
