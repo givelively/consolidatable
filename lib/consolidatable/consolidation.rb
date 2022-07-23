@@ -25,7 +25,7 @@ module Consolidatable
     end
 
     def self.consolidate_them_all
-      ::Consolidation.all.distinct.pluck(:consolidatable_type).each do |klass|
+      Consolidation.all.distinct.pluck(:consolidatable_type).each do |klass|
         glass = klass.constantize
         glass.send(:class_variable_get, '@@consolidate_methods').each do |m|
           glass.find_each { |g| g.send(m) }

@@ -33,10 +33,12 @@ module Consolidatable
            end))
 
       define_method(as) do
-        consolidations.fetch(self, var_name: as,
-                                   var_type: type,
-                                   calculator: calculator,
-                                   not_older_than: not_older_than)
+        Consolidatable::ConsolidationFetcher.new(
+          self, var_name: as,
+                var_type: type,
+                calculator: calculator,
+                not_older_than: not_older_than
+        ).call
       end
     end
   end

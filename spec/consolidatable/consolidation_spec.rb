@@ -59,8 +59,7 @@ RSpec.describe Consolidatable::Consolidation do
     context 'when asking for a DateTime' do
       let(:type) { :datetime }
 
-      it 'returns a integer' do
-        puts consolidation.value.class
+      it 'returns a DateTime' do
         expect(consolidation.value).to be_a(DateTime)
       end
     end
