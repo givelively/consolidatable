@@ -1,6 +1,7 @@
 # Consolidatable
 
 ## Contributing
+
 ### Testing
 
 Consolidatable uses rspec as testing framework.

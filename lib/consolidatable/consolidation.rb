@@ -5,12 +5,16 @@ module Consolidatable
     belongs_to :consolidatable, polymorphic: true, validate: { presence: true }
 
     def self.consolidate_them_all
-      Consolidation.all.distinct.pluck(:consolidatable_type).each do |klass|
-        glass = klass.constantize
-        glass.send(:class_variable_get, '@@consolidate_methods').each do |m|
-          glass.find_each { |g| g.send(m) }
+      Consolidation
+        .all
+        .distinct
+        .pluck(:consolidatable_type)
+        .each do |klass|
+          glass = klass.constantize
+          glass
+            .send(:class_variable_get, '@@consolidate_methods')
+            .each { |m| glass.find_each { |g| g.send(m) } }
         end
-      end
     end
 
     def destale!(new_value)

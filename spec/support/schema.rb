@@ -3,9 +3,10 @@
 ActiveRecord::Schema.define do
   self.verbose = false
 
-  create_table 'consolidations', id: :uuid, default: lambda {
-                                                       'gen_random_uuid()'
-                                                     }, force: :cascade do |t|
+  create_table 'consolidations',
+               id: :uuid,
+               default: -> { 'gen_random_uuid()' },
+               force: :cascade do |t|
     t.uuid 'consolidatable_id', null: false
     t.string 'consolidatable_type', null: false
     t.string 'var_name', null: false
@@ -19,17 +20,19 @@ ActiveRecord::Schema.define do
     t.datetime 'updated_at', precision: 6, null: false
   end
 
-  create_table 'children', id: :uuid, default: lambda {
-                                                 'gen_random_uuid()'
-                                               }, force: :cascade do |t|
+  create_table 'children',
+               id: :uuid,
+               default: -> { 'gen_random_uuid()' },
+               force: :cascade do |t|
     t.string 'name'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
   end
 
-  create_table 'presents', id: :uuid, default: lambda {
-                                                 'gen_random_uuid()'
-                                               }, force: :cascade do |t|
+  create_table 'presents',
+               id: :uuid,
+               default: -> { 'gen_random_uuid()' },
+               force: :cascade do |t|
     t.uuid 'child_id'
     t.string 'name'
     t.float 'weight'

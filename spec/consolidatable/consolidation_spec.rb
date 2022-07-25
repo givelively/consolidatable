@@ -6,24 +6,26 @@ RSpec.describe Consolidatable::Consolidation do
   end
 
   context 'when calling stale?' do
-    subject(:stale?) { described_class.new(updated_at: updated_at).stale?(not_older_than) }
+    subject(:stale?) do
+      described_class.new(updated_at: updated_at).stale?(not_older_than)
+    end
 
     context 'when being stale' do
-      let(:updated_at)     { DateTime.now - 3.days }
+      let(:updated_at) { DateTime.now - 3.days }
       let(:not_older_than) { DateTime.now - 2.days }
 
       it { is_expected.to be true }
     end
 
     context 'when not being stale' do
-      let(:updated_at)     { DateTime.now - 2.days }
+      let(:updated_at) { DateTime.now - 2.days }
       let(:not_older_than) { DateTime.now - 3.days }
 
       it { is_expected.to be false }
     end
 
     context 'when on the edge' do
-      let(:updated_at)     { DateTime.now - 2.days }
+      let(:updated_at) { DateTime.now - 2.days }
       let(:not_older_than) { updated_at }
 
       it { is_expected.to be false }
@@ -32,12 +34,14 @@ RSpec.describe Consolidatable::Consolidation do
 
   context 'when calling value' do
     subject(:consolidation) do
-      described_class.new(float_value: 17,
-                          integer_value: 42,
-                          boolean_value: true,
-                          string_value: 'seventeen point three',
-                          datetime_value: DateTime.now - 1.day,
-                          var_type: type)
+      described_class.new(
+        float_value: 17,
+        integer_value: 42,
+        boolean_value: true,
+        string_value: 'seventeen point three',
+        datetime_value: DateTime.now - 1.day,
+        var_type: type
+      )
     end
 
     context 'when asking for a boolean' do

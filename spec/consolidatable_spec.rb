@@ -2,13 +2,13 @@
 
 # Child and Present are setup in spec/support/basics.rb
 RSpec.shared_examples 'consolidates types' do |type, computer|
-  let(:present) { class_double(Present).as_stubbed_const(transfer_nested_constants: true) }
+  let(:present) do
+    class_double(Present).as_stubbed_const(transfer_nested_constants: true)
+  end
   let(:type) { type }
   let(:computer) { computer }
 
-  before do
-    Child.send(:consolidates, computer, type: type)
-  end
+  before { Child.send(:consolidates, computer, type: type) }
 
   it 'provides a method to retrieve the consolidated value' do
     expect(Child.new).to respond_to(computer)
@@ -20,8 +20,9 @@ RSpec.shared_examples 'consolidates types' do |type, computer|
     end
 
     it 'provides a scope to include the consolidated values' do
-      expect(Child.send(:"with_consolidated_#{computer}").to_sql)
-        .to include("AS consolidated_#{computer}")
+      expect(Child.send(:"with_consolidated_#{computer}").to_sql).to include(
+        "AS consolidated_#{computer}"
+      )
     end
   end
 
@@ -34,7 +35,9 @@ RSpec.shared_examples 'consolidates types' do |type, computer|
 end
 
 RSpec.describe Consolidatable do
-  let(:present) { class_double(Present).as_stubbed_const(transfer_nested_constants: true) }
+  let(:present) do
+    class_double(Present).as_stubbed_const(transfer_nested_constants: true)
+  end
 
   it 'has a version number' do
     expect(Consolidatable::VERSION).to be_a(String)
@@ -67,9 +70,7 @@ RSpec.describe Consolidatable do
   end
 
   describe 'with minimal setup', db_access: true do
-    before do
-      Child.send(:consolidates, :heaviest_present)
-    end
+    before { Child.send(:consolidates, :heaviest_present) }
 
     it 'provides a method with predicable name to access to the consolidated value' do
       expect(Child.new).to respond_to(:consolidated_heaviest_present)
@@ -86,9 +87,10 @@ RSpec.describe Consolidatable do
       child = Child.create
       child.presents.create(weight: 300)
 
-      expect { child.consolidated_heaviest_present }
-        .to change(child.consolidations, :count)
-        .from(0).to(1)
+      expect { child.consolidated_heaviest_present }.to change(
+        child.consolidations,
+        :count
+      ).from(0).to(1)
     end
 
     context 'with fresh consolidations' do
@@ -97,8 +99,10 @@ RSpec.describe Consolidatable do
         child.presents.create(weight: 300)
         child.consolidated_heaviest_present
 
-        expect { child.consolidated_heaviest_present }
-          .not_to change(child.consolidations, :count)
+        expect { child.consolidated_heaviest_present }.not_to change(
+          child.consolidations,
+          :count
+        )
       end
     end
   end

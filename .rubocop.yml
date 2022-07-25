@@ -18,7 +18,6 @@ Layout/LineLength:
 Style/Documentation:
   Enabled: false
 
-
 Style/HashEachMethods:
   Enabled: true
 
