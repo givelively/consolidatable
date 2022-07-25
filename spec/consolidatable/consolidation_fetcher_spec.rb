@@ -3,9 +3,7 @@
 RSpec.shared_examples 'returns a Consolidation' do
   subject(:call) { fetcher.call }
 
-  context 'when calling call' do
-    it { is_expected.to be_a(Consolidatable::Consolidation) }
-  end
+  it { is_expected.to be_a(Consolidatable::Consolidation) }
 end
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers

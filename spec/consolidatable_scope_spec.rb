@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe Consolidatable do
-  let(:present) { class_double(Present).as_stubbed_const(transfer_nested_constants: true) }
+  let(:present) do
+    class_double(Present).as_stubbed_const(transfer_nested_constants: true)
+  end
 
   before { Child.send(:consolidates, :avg_price) }
 
@@ -36,12 +38,14 @@ RSpec.describe Consolidatable do
       end
 
       it 'allows to sort by consolidated values :asc' do
-        children = Child.with_consolidated_avg_price.order(consolidated_avg_price: :asc)
+        children =
+          Child.with_consolidated_avg_price.order(consolidated_avg_price: :asc)
         expect(children).to eq([child2, child1])
       end
 
       it 'allows to sort by consolidated values :desc' do
-        children = Child.with_consolidated_avg_price.order(consolidated_avg_price: :desc)
+        children =
+          Child.with_consolidated_avg_price.order(consolidated_avg_price: :desc)
         expect(children).to eq([child1, child2])
       end
 
