@@ -40,7 +40,7 @@ RSpec.describe Consolidatable::Consolidation do
                           var_type: type)
     end
 
-    context 'when asking for an boolean' do
+    context 'when asking for a boolean' do
       let(:type) { :boolean }
 
       it 'returns a boolean' do

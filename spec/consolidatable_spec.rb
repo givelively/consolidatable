@@ -106,7 +106,7 @@ RSpec.describe Consolidatable do
     it_behaves_like 'consolidates types', :datetime, :oldest_present
   end
 
-  describe 'with minimal setup' do
+  describe 'with minimal setup', db_access: true do
     before do
       Child.send(:consolidates, :heaviest_present)
     end
