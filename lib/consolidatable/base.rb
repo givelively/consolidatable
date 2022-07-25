@@ -2,8 +2,8 @@
 
 module Consolidatable
   module Base
-    def consolidates(calculator, options = {})
-      as             = options[:as]&.id2name || "consolidated_#{calculator}"
+    def consolidates(computer, options = {})
+      as             = options[:as]&.id2name || "consolidated_#{computer}"
       type           = options[:type] || :float
       not_older_than = Time.current - (options[:max_age] || 1.day)
 
@@ -33,12 +33,12 @@ module Consolidatable
            end))
 
       define_method(as) do
-        Consolidatable::ConsolidationFetcher.new(
-          self, var_name: as,
-                var_type: type,
-                calculator: calculator,
-                not_older_than: not_older_than
-        ).call
+        Consolidatable::ConsolidationFetcher.new(self, var_name: as,
+                                                       var_type: type,
+                                                       computer: computer,
+                                                       not_older_than: not_older_than)
+                                            .call
+                                            .value
       end
     end
   end
