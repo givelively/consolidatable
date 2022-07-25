@@ -14,18 +14,6 @@ RSpec.shared_examples 'consolidates types' do |type, computer|
     expect(Child.new).to respond_to(computer)
   end
 
-  context 'when accessing the class' do
-    it 'provides a scope based on the name' do
-      expect(Child).to respond_to(:"with_consolidated_#{computer}")
-    end
-
-    it 'provides a scope to include the consolidated values' do
-      expect(Child.send(:"with_consolidated_#{computer}").to_sql).to include(
-        "AS consolidated_#{computer}"
-      )
-    end
-  end
-
   context 'when there is no data' do
     it 'returns nil' do
       allow(present).to receive(computer).and_return(nil)
