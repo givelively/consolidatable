@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.license = 'MIT'
   spec.platform = Gem::Platform::RUBY
 
-  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_ruby_version = '>= 2.7.5'
   spec.extra_rdoc_files = ['README.md']
   spec.files =
     Dir[
@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
       'Gemfile',
       'Rakefile'
     ]
+  spec.require_paths = ['lib']
 
   spec.add_dependency 'activerecord', '>= 3.2.0'
   spec.add_dependency 'activesupport', '>= 3.2.0'
