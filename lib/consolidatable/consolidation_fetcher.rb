@@ -11,9 +11,10 @@ module Consolidatable
     end
 
     def call
-      consolidatable = find_consolidatable
-      consolidatable = create_consolidatable if consolidatable.nil?
-      consolidatable unless consolidatable.stale?(@not_older_than)
+      consolidation = detect_consolidation || find_consolidation
+      consolidation = create_consolidation if consolidation.nil?
+      consolidation.destale!(@computed_value) if consolidation.stale?(@not_older_than)
+      consolidation
     end
 
     private
@@ -22,13 +23,19 @@ module Consolidatable
       @computed_value ||= @owner.send(@computer)
     end
 
-    def create_consolidatable
+    def create_consolidation
       @owner.consolidations.create(var_name: @var_name,
                                    var_type: @var_type,
                                    "#{@var_type}_value": computed_value)
     end
 
-    def find_consolidatable
+    def detect_consolidation
+      @owner.consolidations.detect do |c|
+        c.var_name == @var_name && c.var_type.to_sym == @var_type
+      end
+    end
+
+    def find_consolidation
       @owner.consolidations.find_by(var_name: @var_name, var_type: @var_type)
     end
   end
