@@ -103,5 +103,7 @@ RSpec.describe Consolidatable do
       fake_class.not_older_than = 1.year
       expect(fake_class).to have_received(:not_older_than=).with(1.year)
     end
+
+    xit 'allows to set the default lambda'
   end
 end
