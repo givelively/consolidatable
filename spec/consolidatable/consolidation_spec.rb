@@ -25,6 +25,50 @@ RSpec.describe Consolidatable::Consolidation do
     end
   end
 
+  context 'when calling destale!' do
+    subject(:call) do
+      consolidation.destale!(new_value)
+    end
+
+    let(:child) { Child.create }
+    let(:consolidation) do
+      described_class.create(
+        consolidatable: child,
+        integer_value: 42,
+        var_type: :integer,
+        var_name: 'numero'
+      )
+    end
+
+    it 'returns a boolean' do
+      expect(consolidation.value).to eq(42)
+    end
+
+    context 'when value changed' do
+      let(:new_value) { 12 }
+
+      it 'updates updated_at' do
+        expect { call }.to change(consolidation, :updated_at)
+      end
+
+      it 'updates the value' do
+        expect { call }.to change(consolidation, :value)
+      end
+    end
+
+    context 'when value did not change' do
+      let(:new_value) { 42 }
+
+      it 'updates updated_at' do
+        expect { call }.to change(consolidation, :updated_at)
+      end
+
+      it 'does not update the value' do
+        expect { call }.not_to change(consolidation, :value)
+      end
+    end
+  end
+
   context 'when calling value' do
     subject(:consolidation) do
       described_class.new(
