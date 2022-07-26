@@ -19,7 +19,7 @@ module Consolidatable
 
     def destale!(new_value)
       self.value = new_value
-      self.updated_at = Time.current
+      self.updated_at = Time.current - rand(5).seconds
       save
     end
 
