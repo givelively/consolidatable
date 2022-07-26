@@ -12,21 +12,14 @@ RSpec.describe Consolidatable::Consolidation do
 
     context 'when being stale' do
       let(:updated_at) { DateTime.now - 3.days }
-      let(:not_older_than) { DateTime.now - 2.days }
+      let(:not_older_than) { 2.days }
 
       it { is_expected.to be true }
     end
 
     context 'when not being stale' do
       let(:updated_at) { DateTime.now - 2.days }
-      let(:not_older_than) { DateTime.now - 3.days }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when on the edge' do
-      let(:updated_at) { DateTime.now - 2.days }
-      let(:not_older_than) { updated_at }
+      let(:not_older_than) { 3.days }
 
       it { is_expected.to be false }
     end

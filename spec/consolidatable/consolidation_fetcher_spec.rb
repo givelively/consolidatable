@@ -23,7 +23,7 @@ RSpec.describe Consolidatable::ConsolidationFetcher, db_access: true do
   let(:var_name) { :consolidated_heaviest_present }
   let(:var_type) { :float }
   let(:computer) { :heaviest_present }
-  let(:not_older_than) { 1.day.ago }
+  let(:not_older_than) { 1.day }
   let(:present) do
     class_double(Present).as_stubbed_const(transfer_nested_constants: true)
   end

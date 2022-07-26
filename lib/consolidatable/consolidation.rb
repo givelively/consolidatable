@@ -24,7 +24,7 @@ module Consolidatable
     end
 
     def stale?(not_older_than)
-      updated_at < not_older_than
+      updated_at < (Time.current - not_older_than)
     end
 
     def value
