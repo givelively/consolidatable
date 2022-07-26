@@ -45,12 +45,13 @@ RSpec.describe Consolidatable::ConsolidationFetcher, db_access: true do
   end
 
   context 'when Consolidation is stale?' do
-    let(:consolidation) do
+    let!(:consolidation) do
       owner.consolidations.create(
         var_name: var_name,
         var_type: :float,
         float_value: 1,
-        updated_at: 3.days.ago
+        updated_at: 3.days.ago,
+        created_at: 3.days.ago
       )
     end
 
@@ -64,6 +65,11 @@ RSpec.describe Consolidatable::ConsolidationFetcher, db_access: true do
 
       it_behaves_like 'returns a Consolidation'
       it 'updates the consolidation value' do
+        call
+        expect(owner.consolidations.last.reload.float_value).to eq(9.0)
+      end
+
+      it 'returns a consolidation with the correct value' do
         expect(call.value).to eq(9.0)
       end
     end

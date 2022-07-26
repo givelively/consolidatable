@@ -3,10 +3,7 @@
 ActiveRecord::Schema.define do
   self.verbose = false
 
-  create_table 'consolidations',
-               id: :uuid,
-               default: -> { 'gen_random_uuid()' },
-               force: :cascade do |t|
+  create_table 'consolidations', force: :cascade do |t|
     t.uuid 'consolidatable_id', null: false
     t.string 'consolidatable_type', null: false
     t.string 'var_name', null: false
@@ -18,6 +15,8 @@ ActiveRecord::Schema.define do
     t.datetime 'datetime_value'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
+    t.index ['consolidatable_id', 'consolidatable_type', 'var_name'],
+      name: 'consolidations_main_index'
   end
 
   create_table 'children',

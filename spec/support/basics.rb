@@ -40,12 +40,8 @@ class Present < ApplicationRecord
   belongs_to :child
 
   def self.longest_present_name(obj); end
-
   def self.heaviest_present(obj); end
-
   def self.avg_price(obj); end
-
   def self.all_cute?(obj); end
-
   def self.oldest_present(obj); end
 end

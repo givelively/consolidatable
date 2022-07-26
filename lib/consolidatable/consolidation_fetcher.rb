@@ -13,7 +13,7 @@ module Consolidatable
     def call
       consolidation = detect_consolidation || find_consolidation
       consolidation = create_consolidation if consolidation.nil?
-      consolidation.destale!(@computed_value) if consolidation.stale?(@not_older_than)
+      consolidation.destale!(computed_value) if consolidation.stale?(@not_older_than)
       consolidation
     end
 

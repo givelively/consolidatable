@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
       'LICENSE',
       'CHANGELOG.md',
       'lib/**/*.rb',
+      'lib/**/*.erb',
       'lib/**/*.rake',
       'consolidatable.gemspec',
       '.github/*.md',

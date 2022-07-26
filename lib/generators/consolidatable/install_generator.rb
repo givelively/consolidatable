@@ -8,7 +8,7 @@ module Consolidatable
   module Generators
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
-      source_root File.expand_path('../templates', __dir__)
+      source_root File.expand_path('./templates', __dir__)
       desc 'Install Consolidatable'
 
       def self.next_migration_number(path)
@@ -21,6 +21,10 @@ module Consolidatable
           'db/migrate/create_consolidatable_table.rb',
           migration_version: migration_version
         )
+      end
+
+      def create_initializer
+        template 'initializer.rb', 'config/initializers/consolidatable.rb'
       end
 
       def migration_version

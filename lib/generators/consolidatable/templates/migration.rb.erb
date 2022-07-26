@@ -11,10 +11,14 @@ class CreateConsolidatableTable < ActiveRecord::Migration<%= migration_version %
       t.string 'string_value'
       t.datetime 'datetime_value'
 
-      t.timestamps, null: false
+      t.timestamps
     end
 
-    add_index 'consolidations', ['consolidatable_id', 'consolidatable_type', 'var_name']
+    add_index 'consolidations', ['consolidatable_id',
+                                 'consolidatable_type',
+                                 'var_name'],
+                                name: :consolidations_main_index
+
   end
   
   def self.down
