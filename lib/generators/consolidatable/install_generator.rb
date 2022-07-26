@@ -24,7 +24,7 @@ module Consolidatable
       end
 
       def create_initializer
-        template 'initializer.rb', 'config/initializers/consolidatable.rb'
+        template 'initializer.rb.erb', 'config/initializers/consolidatable.rb'
       end
 
       def migration_version

@@ -94,4 +94,14 @@ RSpec.describe Consolidatable do
       end
     end
   end
+
+  describe 'default config' do
+    let(:fake_class) { class_double(described_class) }
+
+    it 'allows to set the default timeout' do
+      allow(fake_class).to receive(:not_older_than=).with(1.year)
+      fake_class.not_older_than = 1.year
+      expect(fake_class).to have_received(:not_older_than=).with(1.year)
+    end
+  end
 end

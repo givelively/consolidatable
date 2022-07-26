@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+require 'consolidatable'
+
+Consolidatable.configure do |config|
+  # The default time a consolidated value is considered fresh.
+  config.not_older_than = 1.hour
+end
