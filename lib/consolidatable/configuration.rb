@@ -7,7 +7,7 @@ module Consolidatable
     attr_accessor :not_older_than, :fetcher
 
     def initialize
-      @not_older_than = 1.day
+      @not_older_than = 1.hour
       @fetcher = InlineConsolidationFetcher
     end
   end
