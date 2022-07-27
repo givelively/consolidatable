@@ -3,7 +3,7 @@
 Consolodatable provides tooling to precalculate values and cache them in the database for a specified amount of time.
 
 ## Installation
-This gem is unreleased and currently only available via
+Add the following line to your Gemfile:
 ```ruby
 gem 'consolidatable', git: 'https://github.com/givelively/consolidatable.git'
 ```
