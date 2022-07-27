@@ -9,7 +9,7 @@ ActiveRecord::Schema.define do
     t.string 'var_name', null: false
     t.string 'var_type', null: false
     t.float 'float_value'
-    t.integer 'integer_value'
+    t.bigint 'integer_value'
     t.boolean 'boolean_value'
     t.string 'string_value'
     t.datetime 'datetime_value'

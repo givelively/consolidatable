@@ -68,7 +68,7 @@ RSpec.describe Consolidatable do
       child = Child.create
 
       allow(present).to receive(:heaviest_present).and_return(300)
-      expect(child.consolidated_heaviest_present).to be_a(Float)
+      expect(child.consolidated_heaviest_present).to be_a(Integer)
     end
 
     it 'creates a new consolidation when called for the first time' do
