@@ -2,15 +2,14 @@
 
 module Consolidatable
   class ConsolidationFetcherJob < ::ActiveJob::Base
-    def perform(owner_class, owner_id, variable, computer)
+    def perform(owner_class, owner_id, variable, computer, not_older_than)
       owner = owner_class.constantize.find(owner_id)
-      return if owner.blank?
-
-      owner.consolidations.create(
-        var_name: variable.name,
-        var_type: variable.type,
-        "#{variable.type}_value": owner.send(computer)
-      )
+      InlineConsolidationFetcher.new(
+        owner: owner,
+        computer: computer,
+        variable: variable,
+        not_older_than: not_older_than
+      ).call
     end
   end
 end

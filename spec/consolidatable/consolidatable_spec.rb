@@ -57,7 +57,7 @@ RSpec.describe Consolidatable do
     it_behaves_like 'consolidates types', :datetime, :oldest_present
   end
 
-  describe 'with minimal setup', db_access: true do
+  describe 'with minimal setup' do
     before { Child.send(:consolidates, :heaviest_present) }
 
     it 'provides a method with predicable name to access to the consolidated value' do
@@ -105,9 +105,13 @@ RSpec.describe Consolidatable do
     end
 
     it 'allows to set the default fetcher' do
-      allow(fake_class).to receive(:fetcher=).with(Consolidatable::InlineConsolidationFetcher)
+      allow(fake_class).to receive(:fetcher=).with(
+        Consolidatable::InlineConsolidationFetcher
+      )
       fake_class.fetcher = Consolidatable::InlineConsolidationFetcher
-      expect(fake_class).to have_received(:fetcher=).with(Consolidatable::InlineConsolidationFetcher)
+      expect(fake_class).to have_received(:fetcher=).with(
+        Consolidatable::InlineConsolidationFetcher
+      )
     end
   end
 end

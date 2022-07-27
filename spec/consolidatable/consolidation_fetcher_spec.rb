@@ -6,7 +6,7 @@ RSpec.shared_examples 'returns a Consolidation' do
   it { is_expected.to be_a(Consolidatable::Consolidation) }
 end
 
-RSpec.describe Consolidatable::ConsolidationFetcher, db_access: true do
+RSpec.describe Consolidatable::ConsolidationFetcher do
   subject(:call) { fetcher.call }
 
   let(:fetcher) do

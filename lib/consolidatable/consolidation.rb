@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 module Consolidatable
-  class Consolidation < ActiveRecord::Base
+  class Consolidation < ::ActiveRecord::Base
     belongs_to :consolidatable, polymorphic: true, validate: { presence: true }
 
-    scope :find_variable, ->(variable) { where(var_name: variable.name, var_type: variable.type) }
+    scope :find_variable,
+          lambda { |variable|
+            where(var_name: variable.name, var_type: variable.type)
+          }
 
     def self.consolidate_them_all
       Consolidation

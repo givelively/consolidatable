@@ -15,8 +15,8 @@ ActiveRecord::Schema.define do
     t.datetime 'datetime_value'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
-    t.index ['consolidatable_id', 'consolidatable_type', 'var_name'],
-      name: 'consolidations_main_index'
+    t.index %w[consolidatable_id consolidatable_type var_name],
+            name: 'consolidations_main_index'
   end
 
   create_table 'children',

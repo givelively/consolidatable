@@ -26,9 +26,7 @@ RSpec.describe Consolidatable::Consolidation do
   end
 
   context 'when calling destale!' do
-    subject(:call) do
-      consolidation.destale!(new_value)
-    end
+    subject(:call) { consolidation.destale!(new_value) }
 
     let(:child) { Child.create }
     let(:consolidation) do

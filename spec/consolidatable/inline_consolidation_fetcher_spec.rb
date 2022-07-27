@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
-RSpec.describe Consolidatable::InlineConsolidationFetcher, db_access: true do
+RSpec.describe Consolidatable::InlineConsolidationFetcher do
   subject(:call) { fetcher.call }
 
   let(:fetcher) do
@@ -13,7 +13,9 @@ RSpec.describe Consolidatable::InlineConsolidationFetcher, db_access: true do
     )
   end
   let(:owner) { Child.create }
-  let(:variable) { Variable.new(name: :consolidated_heaviest_present, type: :float) }
+  let(:variable) do
+    Variable.new(name: :consolidated_heaviest_present, type: :float)
+  end
   let(:computer) { :heaviest_present }
   let(:not_older_than) { 1.day }
   let(:present) do

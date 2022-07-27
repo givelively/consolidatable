@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
-RSpec.describe Consolidatable::BackgroundConsolidationFetcher, db_access: true do
+RSpec.describe Consolidatable::BackgroundConsolidationFetcher do
   subject(:call) { fetcher.call }
 
   let(:fetcher) do
@@ -13,7 +13,9 @@ RSpec.describe Consolidatable::BackgroundConsolidationFetcher, db_access: true d
     )
   end
   let(:owner) { Child.create }
-  let(:variable) { Variable.new(name: :consolidated_heaviest_present, type: :float) }
+  let(:variable) do
+    Variable.new(name: :consolidated_heaviest_present, type: :float)
+  end
   let(:computer) { :heaviest_present }
   let(:not_older_than) { 1.day }
   let(:present) do
@@ -35,10 +37,16 @@ RSpec.describe Consolidatable::BackgroundConsolidationFetcher, db_access: true d
       expect { call }.not_to change(owner.consolidations, :count)
     end
 
+    it 'returns a consolidation with nil as value' do
+      expect(call.value).to be_nil
+    end
+
     it 'schedules a background job to update the value' do
       allow(Consolidatable::ConsolidationFetcherJob).to receive(:perform_later)
       call
-      expect(Consolidatable::ConsolidationFetcherJob).to have_received(:perform_later)
+      expect(Consolidatable::ConsolidationFetcherJob).to have_received(
+        :perform_later
+      )
     end
   end
 
@@ -48,8 +56,8 @@ RSpec.describe Consolidatable::BackgroundConsolidationFetcher, db_access: true d
         var_name: variable.name,
         var_type: variable.type,
         float_value: 1,
-        updated_at: 3.days.ago,
-        created_at: 3.days.ago
+        updated_at: 1.year.ago,
+        created_at: 1.year.ago
       )
     end
 
@@ -61,20 +69,23 @@ RSpec.describe Consolidatable::BackgroundConsolidationFetcher, db_access: true d
     context 'with new data' do
       before { allow(present).to receive(computer).and_return(9.0) }
 
-      it_behaves_like 'returns a Consolidation'
       it 'does not update the consolidation value' do
         call
         expect(owner.consolidations.last.reload.float_value).to eq(1.0)
       end
 
-      it 'returns a consolidation with nil as value' do
-        expect(call.value).to be_nil
+      it 'returns a consolidation with the old value' do
+        expect(call.value).to be(1.0)
       end
 
       it 'schedules a background job to update the value' do
-        allow(Consolidatable::ConsolidationFetcherJob).to receive(:perform_later)
+        allow(Consolidatable::ConsolidationFetcherJob).to receive(
+          :perform_later
+        )
         call
-        expect(Consolidatable::ConsolidationFetcherJob).to have_received(:perform_later)
+        expect(Consolidatable::ConsolidationFetcherJob).to have_received(
+          :perform_later
+        )
       end
     end
   end

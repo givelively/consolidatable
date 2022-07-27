@@ -18,7 +18,6 @@ require 'consolidatable/version'
 
 module Consolidatable
   class << self
-    attr_accessor :not_older_than,
-                  :fetcher
+    attr_accessor :not_older_than, :fetcher
   end
 end

@@ -5,7 +5,8 @@ module Consolidatable
     def consolidates(computer, options = {})
       as = options[:as]&.id2name || "consolidated_#{computer}"
       type = options[:type] || :float
-      not_older_than = options[:not_older_than] || Consolidatable.config.not_older_than
+      not_older_than =
+        options[:not_older_than] || Consolidatable.config.not_older_than
       fetcher = options[:fetcher] || Consolidatable.config.fetcher
 
       @@consolidate_methods ||= []
