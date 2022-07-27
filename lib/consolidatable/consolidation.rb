@@ -17,6 +17,12 @@ module Consolidatable
         end
     end
 
+    def self.detect(collection, variable)
+      collection.detect do |c|
+        c.var_name == variable.name && c.var_type.to_sym == variable.type
+      end
+    end
+
     def destale!(new_value)
       self.value = new_value
       self.updated_at = Time.current - rand(5).seconds

@@ -104,6 +104,10 @@ RSpec.describe Consolidatable do
       expect(fake_class).to have_received(:not_older_than=).with(1.year)
     end
 
-    xit 'allows to set the default lambda'
+    it 'allows to set the default fetcher' do
+      allow(fake_class).to receive(:fetcher=).with(Consolidatable::InlineConsolidationFetcher)
+      fake_class.fetcher = Consolidatable::InlineConsolidationFetcher
+      expect(fake_class).to have_received(:fetcher=).with(Consolidatable::InlineConsolidationFetcher)
+    end
   end
 end

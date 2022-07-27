@@ -1,16 +1,21 @@
 # frozen_string_literal: true
 
+require 'active_job'
 require 'active_record'
 require 'database_cleaner'
 require 'erb'
 require 'yaml'
 
 # Basic classes for testing
-class ApplicationRecord < ActiveRecord::Base
+
+class ::ApplicationJob < ::ActiveJob::Base
+end
+
+class ::ApplicationRecord < ::ActiveRecord::Base
   self.abstract_class = true
 end
 
-class Child < ApplicationRecord
+class Child < ::ApplicationRecord
   include Consolidatable
 
   has_many :presents
@@ -36,7 +41,7 @@ class Child < ApplicationRecord
   end
 end
 
-class Present < ApplicationRecord
+class Present < ::ApplicationRecord
   belongs_to :child
 
   def self.longest_present_name(obj); end

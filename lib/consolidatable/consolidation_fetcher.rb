@@ -8,13 +8,11 @@ module Consolidatable
       @var_type = var_type
       @computer = computer
       @not_older_than = not_older_than
+      @variable = Variable.new(name: var_name, type: var_type)
     end
 
     def call
-      consolidation = detect_consolidation || find_consolidation
-      consolidation = create_consolidation if consolidation.nil?
-      consolidation.destale!(computed_value) if consolidation.stale?(@not_older_than)
-      consolidation
+      raise NotImplementedError
     end
 
     private
@@ -23,22 +21,12 @@ module Consolidatable
       @computed_value ||= @owner.send(@computer)
     end
 
-    def create_consolidation
-      @owner.consolidations.create(
-        var_name: @var_name,
-        var_type: @var_type,
-        "#{@var_type}_value": computed_value
-      )
-    end
-
     def detect_consolidation
-      @owner.consolidations.detect do |c|
-        c.var_name == @var_name && c.var_type.to_sym == @var_type
-      end
+      Consolidation.detect(@owner.consolidations, @variable)
     end
 
     def find_consolidation
-      @owner.consolidations.find_by(var_name: @var_name, var_type: @var_type)
+      @owner.consolidations.find_by(var_name: @variable.name, var_type: @variable.type)
     end
   end
 end
