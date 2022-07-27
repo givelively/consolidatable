@@ -40,28 +40,29 @@ end
 
 The simplest use case above will provide a method `consolidated_very_expensive_value`.
 
-By default, `consolidates` assumes that you want to store a `Float` value.
+By default, `consolidates` assumes that you want to store a `Integer` value.
 
 The first time you call `consolidated_very_expensive_value` will call `very_expensive_value` and cache the value.
 
 The second time you call `consolidated_very_expensive_value`, it returns the cached value.
 
 ### type
-If you don't want to consolidate a Float value, you have to specify the type like this:
+If you don't want to consolidate an Integer value, you have to specify the type like this:
 ```ruby
 class Nonprofit
   [...]
-  consolidates :very_expensive_value, type: :integer
+  consolidates :very_expensive_value, type: :float
   [...]
 end
 ```
 Supported types are
-- `:float` (default)
-- `:integer`
+- `:float`
+- `:integer` (default, stored as bigint)
 - `:boolean`
 - `:string`
 - `:datetime`
 
+Or you can change the default type in `config/initializers/consolidatable.rb`.
 ### not_older_than
 
 By default, cached values will be considered fresh for the time defined in `config/initializers/consolidatable.rb`, by default set to `1.hour`.
