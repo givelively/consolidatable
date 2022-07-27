@@ -44,7 +44,7 @@ By default, `consolidates` assumes that you want to store a `Float` value.
 
 The first time you call `consolidated_very_expensive_value` will call `very_expensive_value` and cache the value.
 
-The second time you call `consolidated_very_expensive_value`, you will be provided with the cached value.
+The second time you call `consolidated_very_expensive_value`, it returns the cached value.
 
 ### type
 If you don't want to consolidate a Float value, you have to specify the type like this:
@@ -74,13 +74,13 @@ consolidates :very_expensive_value, not_older_than: 1.day
 ### as
 
 Consolidatable provides a default name for the method returning the consolidated value by prefixing the original method name with `consolidated_`.
-To change the name of that method use the `as` attribute (defining the method `cheap_value`):
+To change the name of that method use the `as` attribute (defining the method `cheap_value` below):
 ```ruby
 consolidates :very_expensive_value, as: :cheap_value
 ```
 
 ## Scope
-By default, Consolidatable provides a scope named after the new value. Below example provides a scope `with_total_amount_raised`
+By default, Consolidatable provides a scope named after the new value. Below example provides the scope `with_total_amount_raised`
 ```ruby
   consolidates :calculate_total_amount_raised, as: :total_amount_raised
 ```
@@ -96,7 +96,7 @@ Will provide you the five nonprofits with the highest (cached) values for `total
 ## Calculating the new value
 Using the default `InlineConsolidationFetcher`, Consolidatable computes the requested value if the cache is stale or doesn't exist yet. In those cases **_Consolidatable will attempt to write to the database_**, even though you are calling a getter.
 
-There is an experimental[^experimental] fetcher called `BackgroundConsolidationFetcher` that provides the cached value or nil and not attempt to write to the database. Stale or nonexistent values will be refreshed in the background, by triggering an ActiveJob.
+There is an experimental[^experimental] fetcher called `BackgroundConsolidationFetcher` that provides the cached value or nil and will not attempt to write to the database. Stale or nonexistent values will be refreshed in the background, by triggering an ActiveJob.
 
 To change the fetcher, use
 ```ruby
