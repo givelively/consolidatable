@@ -46,7 +46,11 @@ RSpec.describe Consolidatable::BackgroundConsolidationFetcher do
       call
       expect(Consolidatable::ConsolidationFetcherJob).to have_received(
         :perform_later
-      )
+      ).with(not_older_than: 1.day,
+             computer: computer,
+             owner_class: 'Child',
+             owner_id: owner.id,
+             variable_hash: variable.to_h)
     end
   end
 

@@ -24,11 +24,11 @@ module Consolidatable
 
     def schedule_job
       Consolidatable::ConsolidationFetcherJob.perform_later(
-        @owner.class.name,
-        @owner.id,
-        @variable.to_h,
-        @computer,
-        @not_older_than
+        owner_class: @owner.class.name,
+        owner_id: @owner.id,
+        variable_hash: @variable.to_h,
+        computer: @computer,
+        not_older_than: @not_older_than
       )
     end
   end
