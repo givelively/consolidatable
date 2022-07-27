@@ -106,11 +106,11 @@ RSpec.describe Consolidatable do
 
     it 'allows to set the default fetcher' do
       allow(fake_class).to receive(:fetcher=).with(
-        Consolidatable::InlineConsolidationFetcher
+        Consolidatable::InlineFetcher
       )
-      fake_class.fetcher = Consolidatable::InlineConsolidationFetcher
+      fake_class.fetcher = Consolidatable::InlineFetcher
       expect(fake_class).to have_received(:fetcher=).with(
-        Consolidatable::InlineConsolidationFetcher
+        Consolidatable::InlineFetcher
       )
     end
   end

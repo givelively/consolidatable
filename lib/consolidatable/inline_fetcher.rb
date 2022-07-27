@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Consolidatable
-  class InlineConsolidationFetcher < ConsolidationFetcher
+  class InlineFetcher < Fetcher
     def call
       consolidation = detect_consolidation || find_consolidation
       consolidation = create_consolidation if consolidation.nil?

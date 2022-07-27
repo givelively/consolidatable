@@ -8,7 +8,7 @@ module Consolidatable
 
     def initialize
       @not_older_than = 1.hour
-      @fetcher = InlineConsolidationFetcher
+      @fetcher = InlineFetcher
     end
   end
 end

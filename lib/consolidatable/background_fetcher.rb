@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Consolidatable
-  class BackgroundConsolidationFetcher < ConsolidationFetcher
+  class BackgroundFetcher < Fetcher
     def call
       consolidation = detect_consolidation || find_consolidation
 
@@ -23,7 +23,7 @@ module Consolidatable
     end
 
     def schedule_job
-      Consolidatable::ConsolidationFetcherJob.perform_later(
+      Consolidatable::FetcherJob.perform_later(
         owner_class: @owner.class.name,
         owner_id: @owner.id,
         variable_hash: @variable.to_h,

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Consolidatable::ConsolidationFetcher do
+RSpec.describe Consolidatable::Fetcher do
   subject(:call) { fetcher.call }
 
   let(:fetcher) do

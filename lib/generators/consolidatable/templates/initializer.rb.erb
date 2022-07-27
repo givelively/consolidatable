@@ -10,5 +10,5 @@ Consolidatable.configure do |config|
   # InlineConsolidationFetcher: updates stale data the moment it is requested
   # BackgroundConsolidationFetcher: provides the existing data and updates in the
   #                                 background when necessary
-  config.fetcher = Consolidatable::InlineConsolidationFetcher
+  config.fetcher = Consolidatable::InlineFetcher
 end

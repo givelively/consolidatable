@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Consolidatable
-  class ConsolidationFetcher
+  class Fetcher
     def initialize(owner:, variable:, computer:, not_older_than:)
       @owner = owner
       @variable = variable
