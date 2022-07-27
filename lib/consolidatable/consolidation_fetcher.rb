@@ -4,9 +4,9 @@ module Consolidatable
   class ConsolidationFetcher
     def initialize(owner, variable:, computer:, not_older_than:)
       @owner = owner
+      @variable = variable
       @computer = computer
       @not_older_than = not_older_than
-      @variable = variable
     end
 
     def call
