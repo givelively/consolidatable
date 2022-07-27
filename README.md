@@ -94,13 +94,13 @@ Nonprofit
 Will provide you the five nonprofits with the highest (cached) values for `total_amount_raised`.
 
 ## Calculating the new value
-Using the default `InlineConsolidationFetcher`, Consolidatable computes the requested value if the cache is stale or doesn't exist yet. In those cases **_Consolidatable will attempt to write to the database_**, even though you are calling a getter.
+Using the default `InlineFetcher`, Consolidatable computes the requested value if the cache is stale or doesn't exist yet. In those cases **_Consolidatable will attempt to write to the database_**, even though you are calling a getter.
 
-There is an experimental[^experimental] fetcher called `BackgroundConsolidationFetcher` that provides the cached value or nil and will not attempt to write to the database. Stale or nonexistent values will be refreshed in the background, by triggering an ActiveJob.
+There is an experimental[^experimental] fetcher called `BackgroundFetcher` that provides the cached value or nil and will not attempt to write to the database. Stale or nonexistent values will be refreshed in the background, by triggering an ActiveJob.
 
 To change the fetcher, use
 ```ruby
-consolidates :very_expensive_value, fetcher: BackgroundConsolidationFetcher
+consolidates :very_expensive_value, fetcher: BackgroundFetcher
 ```
 or change the default fetcher in `config/initializers/consolidatable.rb`.
 

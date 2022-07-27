@@ -7,8 +7,7 @@ Consolidatable.configure do |config|
   config.not_older_than = 1.hour
 
   # The default class that is responsible for providing and recalculating the right data
-  # InlineConsolidationFetcher: updates stale data the moment it is requested
-  # BackgroundConsolidationFetcher: provides the existing data and updates in the
-  #                                 background when necessary
+  # InlineFetcher: updates stale data the moment it is requested
+  # BackgroundFetcher: provides the existing data and updates in the background when necessary
   config.fetcher = Consolidatable::InlineFetcher
 end
