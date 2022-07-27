@@ -5,7 +5,7 @@ RSpec.describe Consolidatable::ConsolidationFetcher do
 
   let(:fetcher) do
     described_class
-      .new(nil, variable: nil, computer: nil, not_older_than: nil)
+      .new(owner: nil, variable: nil, computer: nil, not_older_than: nil)
   end
 
   before { Child.send(:consolidates, :bar, type: :float) }

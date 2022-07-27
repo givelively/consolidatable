@@ -42,12 +42,10 @@ module Consolidatable
 
       define_method(as) do
         fetcher
-          .new(
-            self,
-            variable: Variable.new(name: as, type: type),
-            computer: computer,
-            not_older_than: not_older_than
-          )
+          .new(owner: self,
+               variable: Variable.new(name: as, type: type),
+               computer: computer,
+               not_older_than: not_older_than)
           .call
           .value
       end

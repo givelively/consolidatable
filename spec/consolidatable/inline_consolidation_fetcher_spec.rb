@@ -6,7 +6,7 @@ RSpec.describe Consolidatable::InlineConsolidationFetcher do
 
   let(:fetcher) do
     described_class.new(
-      owner,
+      owner: owner,
       variable: variable,
       computer: computer,
       not_older_than: not_older_than

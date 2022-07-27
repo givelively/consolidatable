@@ -19,7 +19,7 @@ RSpec.describe Consolidatable::ConsolidationFetcherJob do
       allow(Consolidatable::InlineConsolidationFetcher)
         .to receive(:new)
         .and_return(Consolidatable::InlineConsolidationFetcher
-        .new(child, variable: variable, computer: :heaviest_present, not_older_than: 1.day))
+        .new(owner: child, variable: variable, computer: :heaviest_present, not_older_than: 1.day))
     end
 
     it 'calls Consolidatable::InlineConsolidationFetcher' do
