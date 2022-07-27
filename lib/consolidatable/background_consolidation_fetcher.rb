@@ -23,12 +23,6 @@ module Consolidatable
     end
 
     def schedule_job
-      Rails.logger.debug('In the fetcher')
-      Rails.logger.debug(@owner.inspect)
-      Rails.logger.debug(@variable.inspect)
-      Rails.logger.debug(@computer.inspect)
-      Rails.logger.debug(@not_older_than.inspect)
-
       Consolidatable::ConsolidationFetcherJob.perform_later(
         owner_class: @owner.class.name,
         owner_id: @owner.id,

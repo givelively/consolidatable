@@ -6,12 +6,6 @@ module Consolidatable
       owner = owner_class.constantize.find(owner_id)
       variable = Variable.factory(variable_hash)
 
-      Rails.logger.debug('In the job')
-      Rails.logger.debug(owner.inspect)
-      Rails.logger.debug(variable.inspect)
-      Rails.logger.debug(computer.inspect)
-      Rails.logger.debug(not_older_than.inspect)
-
       Consolidatable::InlineConsolidationFetcher.new(
         owner: owner,
         variable: variable,
