@@ -12,8 +12,7 @@ RSpec.describe Consolidatable::ConsolidationFetcher, db_access: true do
   let(:fetcher) do
     described_class.new(
       Child.create,
-      var_name: :foo,
-      var_type: :float,
+      variable: Variable.new(name: :foo, type: :float),
       computer: :bar,
       not_older_than: 1.day
     )

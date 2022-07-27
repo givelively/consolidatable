@@ -2,13 +2,11 @@
 
 module Consolidatable
   class ConsolidationFetcher
-    def initialize(owner, var_name:, var_type:, computer:, not_older_than:)
+    def initialize(owner, variable:, computer:, not_older_than:)
       @owner = owner
-      @var_name = var_name
-      @var_type = var_type
       @computer = computer
       @not_older_than = not_older_than
-      @variable = Variable.new(name: var_name, type: var_type)
+      @variable = variable
     end
 
     def call
@@ -26,7 +24,7 @@ module Consolidatable
     end
 
     def find_consolidation
-      @owner.consolidations.find_by(var_name: @variable.name, var_type: @variable.type)
+      @owner.consolidations.find_variable(@variable).first
     end
   end
 end

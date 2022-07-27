@@ -7,22 +7,20 @@ RSpec.describe Consolidatable::InlineConsolidationFetcher, db_access: true do
   let(:fetcher) do
     described_class.new(
       owner,
-      var_name: var_name,
-      var_type: var_type,
+      variable: variable,
       computer: computer,
       not_older_than: not_older_than
     )
   end
   let(:owner) { Child.create }
-  let(:var_name) { :consolidated_heaviest_present }
-  let(:var_type) { :float }
+  let(:variable) { Variable.new(name: :consolidated_heaviest_present, type: :float) }
   let(:computer) { :heaviest_present }
   let(:not_older_than) { 1.day }
   let(:present) do
     class_double(Present).as_stubbed_const(transfer_nested_constants: true)
   end
 
-  before { Child.send(:consolidates, computer, type: var_type) }
+  before { Child.send(:consolidates, computer, type: variable.type) }
 
   context 'when no matching Consolidation can be found' do
     before { allow(present).to receive(computer) }
@@ -41,8 +39,8 @@ RSpec.describe Consolidatable::InlineConsolidationFetcher, db_access: true do
   context 'when Consolidation is stale?' do
     let!(:consolidation) do
       owner.consolidations.create(
-        var_name: var_name,
-        var_type: :float,
+        var_name: variable.name,
+        var_type: variable.type,
         float_value: 1,
         updated_at: 3.days.ago,
         created_at: 3.days.ago
@@ -70,12 +68,12 @@ RSpec.describe Consolidatable::InlineConsolidationFetcher, db_access: true do
   end
 
   context 'when given an object with eager loaded Consolidations' do
-    before { owner.send(var_name) }
+    before { owner.send(variable.name) }
 
     it_behaves_like 'returns a Consolidation'
     it 'does not make any AR calls' do
       owner = Child.includes(:consolidations).first
-      expect(log_queries { owner.send(var_name) }).not_to include(
+      expect(log_queries { owner.send(variable.name) }).not_to include(
         'Consolidatable::Consolidation Load'
       )
     end

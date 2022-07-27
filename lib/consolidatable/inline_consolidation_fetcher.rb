@@ -13,9 +13,9 @@ module Consolidatable
 
     def create_consolidation
       @owner.consolidations.create(
-        var_name: @var_name,
-        var_type: @var_type,
-        "#{@var_type}_value": computed_value
+        var_name: @variable.name,
+        var_type: @variable.type,
+        "#{@variable.type}_value": computed_value
       )
     end
   end

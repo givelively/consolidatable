@@ -43,8 +43,7 @@ module Consolidatable
         fetcher
           .new(
             self,
-            var_name: as,
-            var_type: type,
+            variable: Variable.new(name: as, type: type),
             computer: computer,
             not_older_than: not_older_than
           )

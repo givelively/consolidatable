@@ -7,4 +7,8 @@ class Variable
     @name = name
     @type = type
   end
+
+  def to_h
+    { name: @name, type: @type }
+  end
 end

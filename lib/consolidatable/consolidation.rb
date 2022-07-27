@@ -4,6 +4,8 @@ module Consolidatable
   class Consolidation < ActiveRecord::Base
     belongs_to :consolidatable, polymorphic: true, validate: { presence: true }
 
+    scope :find_variable, ->(variable) { where(var_name: variable.name, var_type: variable.type) }
+
     def self.consolidate_them_all
       Consolidation
         .all

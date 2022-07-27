@@ -9,13 +9,12 @@ module Consolidatable
         Consolidatable::ConsolidationFetcherJob
           .perform_later(@owner.class.name,
                          @owner.id,
-                         @var_name,
-                         @var_type,
+                         @variable.to_h,
                          @computer)
 
         return Consolidation.new(consolidatable: @owner,
-                                 var_name: @var_name,
-                                 var_type: @var_type,
+                                 var_name: @variable.name,
+                                 var_type: @variable.type,
                                  value: nil)
       end
 
