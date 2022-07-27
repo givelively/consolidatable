@@ -1,6 +1,6 @@
 # Consolidatable
 
-Consolodatable rovides tooling to precalculate values and keep them in the database for a specified time.
+Consolodatable provides tooling to precalculate values and cache them in the database for a specified amount of time.
 
 ## Installation
 This gem is unreleased and currently only available via
