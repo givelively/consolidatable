@@ -1,6 +1,6 @@
 # Consolidatable
 
-Consolodatable provides tooling to precalculate values and cache them in the database for a specified amount of time.
+Consolidatable provides tooling to precalculate values and cache them in the database for a specified amount of time.
 
 ## Installation
 Add the following line to your Gemfile:
