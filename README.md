@@ -28,7 +28,7 @@ Migrate the database:
 ### Basic use case
 ```ruby
 class Nonprofit
-  includes Consolidatable
+  include Consolidatable
   consolidates :very_expensive_value
 
   def vey_expensive_value
