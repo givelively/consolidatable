@@ -5,7 +5,7 @@ Consolidatable provides tooling to precalculate values and cache them in the dat
 ## Installation
 Add the following line to your Gemfile:
 ```ruby
-gem 'consolidatable', git: 'https://github.com/givelively/consolidatable.git'
+gem 'consolidatable', git: 'https://github.com/timlawrenz/consolidatable.git'
 ```
 
 Download and install the gem:
