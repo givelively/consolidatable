@@ -31,7 +31,7 @@ class Nonprofit
   include Consolidatable
   consolidates :very_expensive_value
 
-  def vey_expensive_value
+  def very_expensive_value
     sleep(3)
     rand(10)
   end
