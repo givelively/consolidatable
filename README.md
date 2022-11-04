@@ -112,13 +112,8 @@ or change the default fetcher in `config/initializers/consolidatable.rb`.
 ### Setup
 
 1. `bundle install`
-1. `cp spec/support/database.example.yml spec/support/database.yml`
+1. `RAILS_ENV=test bundle exec rake db:create db:schema:load`
 
 ### Testing
 
-Consolidatable uses rspec as testing framework.
-you will have to create a database and configure the database connection (please see
-spec/support/database.example.yml). The specs come with their own database schema (please see
-spec/support/schema.rb)
-
-run `bundle exec rspec` to run all tests.
+`bundle exec rspec`
