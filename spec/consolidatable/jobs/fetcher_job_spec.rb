@@ -31,13 +31,5 @@ RSpec.describe Consolidatable::FetcherJob do
       perform
       expect(fetcher).to have_received(:new)
     end
-
-    context 'with existing consolidation' do
-      it 'updates the existing consolidation'
-    end
-
-    context 'without existing consolidation' do
-      it 'creates a new consolidation'
-    end
   end
 end

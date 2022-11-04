@@ -2,11 +2,12 @@
 
 module Consolidatable
   class Fetcher
-    def initialize(owner:, variable:, computer:, not_older_than:)
+    def initialize(owner:, variable:, computer:, not_older_than:, write_wrapper: nil)
       @owner = owner
       @variable = variable
       @computer = computer
       @not_older_than = not_older_than
+      @write_wrapper = write_wrapper || ->(&block) { block.call }
     end
 
     def call
