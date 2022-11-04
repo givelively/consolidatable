@@ -3,7 +3,9 @@
 Consolidatable provides tooling to precalculate values and cache them in the database for a specified amount of time.
 
 ## Installation
+
 Add the following line to your Gemfile:
+
 ```ruby
 gem 'consolidatable', git: 'https://github.com/timlawrenz/consolidatable.git'
 ```
@@ -15,12 +17,12 @@ bundle install
 
 Generate the migration and initializer required by Consolidatable:
 ```sh
-  bundle exec rails g consolidatable:install
+bundle exec rails g consolidatable:install
 ```
 
 Migrate the database:
 ```sh
-  bundle exec rails db:migrate
+bundle exec rails db:migrate
 ```
 
 ## Interface
@@ -106,6 +108,11 @@ consolidates :very_expensive_value, fetcher: BackgroundFetcher
 or change the default fetcher in `config/initializers/consolidatable.rb`.
 
 ## Contributing
+
+### Setup
+
+1. `bundle install`
+1. `cp spec/support/database.example.yml spec/support/database.yml`
 
 ### Testing
 
