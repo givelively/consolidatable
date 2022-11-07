@@ -7,6 +7,7 @@ module Consolidatable
       type = options[:type] || Consolidatable.config.type
       not_older_than = options[:not_older_than] || Consolidatable.config.not_older_than
       fetcher = options[:fetcher] || Consolidatable.config.fetcher
+      write_wrapper = options[:write_wrapper]
 
       @@consolidate_methods ||= []
       @@consolidate_methods << as
@@ -41,10 +42,13 @@ module Consolidatable
 
       define_method(as) do
         fetcher
-          .new(owner: self,
-               variable: Variable.new(name: as, type: type),
-               computer: computer,
-               not_older_than: not_older_than)
+          .new(
+            owner: self,
+            variable: Variable.new(name: as, type: type),
+            computer: computer,
+            not_older_than: not_older_than,
+            write_wrapper: write_wrapper
+          )
           .call
           .value
       end

@@ -1,0 +1,8 @@
+test:
+  host: <%= ENV.fetch('POSTGRES_HOST') { 'localhost' } %>
+  adapter: postgresql
+  encoding: unicode
+  database: consolidatable_test
+  pool: 100
+  username: postgres
+  password:
