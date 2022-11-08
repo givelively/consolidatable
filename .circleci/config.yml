@@ -8,15 +8,6 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps
-  checking:
-    docker:
-      - image: 'cimg/ruby:2.7'
-    steps:
-      - checkout
-      - ruby/install-deps
-      - ruby/rubocop-check:
-          format: progress
-          label: Inspecting with Rubocop
   test:
     docker:
       - image: 'cimg/ruby:2.7'
