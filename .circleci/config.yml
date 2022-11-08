@@ -18,7 +18,6 @@ commands:
   install-deps:
     steps:
       - ruby/install-deps
-      - run: yarn build
 
   database-setup:
     steps:
