@@ -1,21 +1,9 @@
 version: 2.1
 orbs:
   ruby: circleci/ruby@1.8.0
-  node: circleci/node@5.0.2
-  codecov: codecov/codecov@3.2.2
-  browser-tools: circleci/browser-tools@1.1
-  postman: postman/newman@1.0.0
 
 parameters:
   run_workflow_check_and_test:
-    type: boolean
-    default: true
-
-  run_workflow_smoke_test:
-    type: boolean
-    default: true
-
-  run_workflow_salesforce_api_test:
     type: boolean
     default: true
 
@@ -27,20 +15,9 @@ commands:
             - '91:82:dc:42:95:4f:4a:3b:db:32:5c:bc:c7:08:c8:6e'
       - checkout
 
-  install-node-deps:
-    steps:
-      - node/install:
-          install-yarn: true
-          node-version: 18.6.0
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-path: ~/.cache/yarn
-          include-branch-in-cache-key: false
-
   install-deps:
     steps:
       - ruby/install-deps
-      - install-node-deps
       - run: yarn build
 
   database-setup:
@@ -50,54 +27,9 @@ commands:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Database Setup
-          command: bin/rails db:create db:schema:load
-
-  run-system-specs:
-    parameters:
-      tag:
-        default: ''
-        type: string
-    steps:
-      - browser-tools/install-browser-tools
-      - checkout-code
-      - install-deps
-      - database-setup
-      - run: cp .env.sample .env
-      - run: bundle exec rails assets:precompile
-      - run:
-          name: Restrict specs
-          command: echo "--tag << parameters.tag >>" | tee /home/circleci/.rspec
-      - ruby/rspec-test:
-          out-path: /tmp/test-results/system
-      - store_artifacts:
-          path: tmp/screenshots
-      - codecov/upload:
-          file: /tmp/test-results/system/results.xml
+          command: bundle exec rake db:create db:schema:load
 
 jobs:
-  node:
-    working_directory: ~/project
-    executor:
-      name: node/default
-      tag: '18.4'
-    environment:
-      JEST_SUITE_NAME: 'Jest JUnit Unit Tests'
-      JEST_JUNIT_OUTPUT_DIR: '/tmp/test-results/jest'
-    steps:
-      - checkout-code
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-path: ~/.cache/yarn
-          include-branch-in-cache-key: false
-      - run: yarn audit || [ $? -lt 16 ]
-      - run: yarn test
-      - store_test_results:
-          path: /tmp/test-results/jest
-      - store_artifacts:
-          path: /tmp/test-results
-      - codecov/upload:
-          file: '/tmp/test-results/jest/coverage-final.json'
-
   check:
     working_directory: ~/project
     docker:
@@ -110,8 +42,6 @@ jobs:
     steps:
       - checkout-code
       - ruby/install-deps
-      - run: bundle exec brakeman -A -z
-      - run: bundle exec bundler-audit --update
 
   test:
     working_directory: ~/project
@@ -130,231 +60,16 @@ jobs:
       RAILS_ENV: test
       BUNDLE_JOBS: '3'
       BUNDLE_RETRY: '3'
-    parallelism: 14
-    resource_class: medium
+    resource_class: small
     steps:
       - checkout-code
       - install-deps
       - database-setup
-      - run: cp .env.sample .env
-      - run:
-          name: Restrict to non-system specs
-          command: echo "--tag ~type:system" | tee /home/circleci/.rspec
       - ruby/rspec-test
-      - codecov/upload:
-          file: /tmp/test-results/rspec/results.xml
-
-  system:
-    working_directory: ~/project
-    docker:
-      - image: cimg/ruby:2.7.6-browsers
-        environment:
-          PGHOST: 127.0.0.1
-          PGUSER: charityapi-circleci
-          PGPASSWORD: password
-          REDIS_URL: redis://127.0.0.1:6379/
-          E2E_TESTS: true
-          ENABLE_READER_AUTO_SWITCHING: true
-          FLIPPER_ENABLE_CACHE: true
-      - image: cimg/postgres:11.14
-        environment:
-          POSTGRES_USER: charityapi-circleci
-          POSTGRES_DB: charity-api_test
-          POSTGRES_PASSWORD: password
-      - image: cimg/redis:6.2.6
-    description: Run the Capybara test suite.
-    parameters:
-      label:
-        default: Capybara Tests
-        type: string
-    environment:
-      RAILS_ENV: test
-      BUNDLE_JOBS: '3'
-      BUNDLE_RETRY: '3'
-    parallelism: 12
-    resource_class: medium
-    steps:
-      - run-system-specs:
-          tag: "type:system"
-
-  flaky_system_tests:
-    working_directory: ~/project
-    docker:
-      - image: cimg/ruby:2.7.6-browsers
-        environment:
-          PGHOST: 127.0.0.1
-          PGUSER: charityapi-circleci
-          PGPASSWORD: password
-          REDIS_URL: redis://127.0.0.1:6379/
-          E2E_TESTS: true
-          ENABLE_READER_AUTO_SWITCHING: true
-          FLIPPER_ENABLE_CACHE: true
-      - image: cimg/postgres:11.14
-        environment:
-          POSTGRES_USER: charityapi-circleci
-          POSTGRES_DB: charity-api_test
-          POSTGRES_PASSWORD: password
-      - image: cimg/redis:6.2.6
-    description: Run the Capybara test suite flaky tests.
-    parameters:
-      label:
-        default: Capybara Tests
-        type: string
-    environment:
-      RAILS_ENV: test
-      BUNDLE_JOBS: '3'
-      BUNDLE_RETRY: '3'
-    parallelism: 1
-    resource_class: medium
-    steps:
-      - run-system-specs:
-          tag: flaky
-
-  ach_system_tests:
-    working_directory: ~/project
-    docker:
-      - image: cimg/ruby:2.7.6-browsers
-        environment:
-          PGHOST: 127.0.0.1
-          PGUSER: charityapi-circleci
-          PGPASSWORD: password
-          REDIS_URL: redis://127.0.0.1:6379/
-          E2E_TESTS: true
-          ENABLE_READER_AUTO_SWITCHING: true
-          FLIPPER_ENABLE_CACHE: true
-      - image: cimg/postgres:11.14
-        environment:
-          POSTGRES_USER: charityapi-circleci
-          POSTGRES_DB: charity-api_test
-          POSTGRES_PASSWORD: password
-      - image: cimg/redis:6.2.6
-    description: Run the Capybara test suite ACH Donation tests.
-    parameters:
-      label:
-        default: Capybara Tests
-        type: string
-    environment:
-      RAILS_ENV: test
-      BUNDLE_JOBS: '3'
-      BUNDLE_RETRY: '3'
-    parallelism: 10
-    resource_class: medium
-    steps:
-      - run-system-specs:
-          tag: ach
-
-  smoke_test:
-    working_directory: ~/project
-    docker:
-      - image: cimg/ruby:2.7.6-browsers
-        environment:
-          PGHOST: 127.0.0.1
-          PGUSER: charityapi-circleci
-          PGPASSWORD: password
-          SMOKE_TESTING: true
-      - image: cimg/postgres:11.14
-        environment:
-          POSTGRES_USER: charityapi-circleci
-          POSTGRES_DB: charity-api_test
-          POSTGRES_PASSWORD: password
-    description: Run the Capybara smoke test suite.
-    parameters:
-      label:
-        default: Capybara Smoke Tests
-        type: string
-      out-path:
-        default: /tmp/test-results/smoke_capybara
-        description: Where to save the rspec.xml file.
-        type: string
-    environment:
-      RAILS_ENV: test
-      SMOKE_TESTING_URL: 'https://secure-staging.givelively.org'
-    parallelism: 1
-    resource_class: small
-    steps:
-      - browser-tools/install-browser-tools
-      - checkout-code
-      - install-deps
-      - run:
-          name: Restrict to smoke specs
-          command: echo "-t smoke" | tee /home/circleci/.rspec
-      - ruby/rspec-test:
-          out-path: /tmp/test-results/smoke_capybara
-      - store_artifacts:
-          path: tmp/screenshots
-
-  salesforce_api_test:
-    parameters:
-      collection:
-        type: string
-    executor: postman/postman-newman-docker
-    steps:
-      - checkout
-      - postman/newman-run:
-          additional-options: --env-var gl_user_agent=$SF_POSTMAN_USER_AGENT
-                              --env-var npo_admin_password=$SF_POSTMAN_NPO_ADMIN_PASSWORD
-                              --env-var sf_password=$SF_USER_PASSWORD
-                              --env-var client_secret=$SF_CLIENT_SECRET
-                              --env-var client_id=$SF_CLIENT_ID
-                              --env-var stripe_key=$POSTMAN_STRIPE_KEY
-                              --env-var stripe_token=$POSTMAN_STRIPE_TOKEN
-          collection: << parameters.collection >>
-          environment: ./spec/salesforce_api/Salesforce_Sandbox.postman_environment.json
 
 workflows:
   check_and_test:
     when: << pipeline.parameters.run_workflow_check_and_test >>
     jobs:
-      - node
       - check
       - test
-      - system
-      - ach_system_tests
-      - flaky_system_tests
-
-  run_smoke_test:
-    when: << pipeline.parameters.run_workflow_smoke_test >>
-    jobs:
-      - hold:
-          type: approval
-          filters:
-            branches:
-              only:
-                - staging
-
-      - smoke_test:
-          requires:
-            - hold
-          filters:
-            branches:
-              only:
-                - staging
-
-  run_salesforce_api_test:
-    when: << pipeline.parameters.run_workflow_salesforce_api_test >>
-    jobs:
-      - hold:
-          type: approval
-          filters:
-            branches:
-              only:
-                - staging
-
-      - salesforce_api_test:
-          requires:
-            - hold
-          filters:
-            branches:
-              only:
-                - staging
-          matrix:
-            parameters:
-              collection: [
-                ./spec/salesforce_api/Create_GL_Campaign_and_Sync_to_SF.postman_collection.json,
-                ./spec/salesforce_api/Create_GL_Event_with_Campaign_Beneficiary_and_Sync_to_SF.postman_collection.json,
-                ./spec/salesforce_api/Create_GL_P2P_And_Fundraising_Team_with_Campaign_Beneficiary_and_Sync_to_SF.postman_collection.json,
-                ./spec/salesforce_api/Donate_to_GL_Campaign_and_Sync_to_SF.postman_collection.json,
-                ./spec/salesforce_api/Donate_to_GL_Event_and_Sync_to_SF.postman_collection.json,
-                ./spec/salesforce_api/Donate_to_GL_P2P_and_Sync_to_SF.postman_collection.json,
-                ./spec/salesforce_api/Donate_to_GL_Team_and_Sync_to_SF.postman_collection.json
-                ]
