@@ -88,13 +88,17 @@ By default, Consolidatable provides a scope named after the new value. Below exa
   consolidates :calculate_total_amount_raised, as: :total_amount_raised
 ```
 The provided scope will add an aditional artificial column named after the new value:
+
 ```ruby
 Nonprofit
   .with_total_amount_raised
   .order(total_amount_raised: :desc)
   .limit(5)
 ```
+
 Will provide you the five nonprofits with the highest (cached) values for `total_amount_raised`.
+
+If you need to `.count` the query, you must use `.count(:all)`.
 
 ## Calculating the new value
 Using the default `InlineFetcher`, Consolidatable computes the requested value if the cache is stale or doesn't exist yet. In those cases **_Consolidatable will attempt to write to the database_**, even though you are calling a getter.
