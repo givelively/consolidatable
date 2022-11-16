@@ -49,6 +49,12 @@ RSpec.describe Consolidatable do
         expect(children).to eq([child1, child2])
       end
 
+      it 'allows to count(:all) with scope' do
+        count =
+          Child.with_consolidated_avg_price.count(:all)
+        expect(count).to eq(2)
+      end
+
       it 'does not skip a Child without consolidation' do
         Child.create(name: 'child3')
         expect(Child.with_consolidated_avg_price.size).to eq(3)
