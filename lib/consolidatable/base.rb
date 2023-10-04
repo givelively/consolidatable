@@ -31,11 +31,11 @@ module Consolidatable
                     consolidations_alias[:consolidatable_id]
                       .eq(consolidatables_arel[:id])
                       .and(consolidations_alias[:consolidatable_type].eq(klass))
-                      .and(consolidations_alias[:var_name].eq(as))
-                      .and(consolidations_alias[:var_type].eq(type))
                   )
                   .join_sources
               )
+              .where(consolidations_alias[:var_name].eq(as))
+              .where(consolidations_alias[:var_type].eq(type))
           end
         )
       )
