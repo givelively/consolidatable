@@ -5,4 +5,3 @@ test:
   database: consolidatable_test
   pool: 100
   username: postgres
-  password:

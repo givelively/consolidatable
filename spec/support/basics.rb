@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
-require 'active_job'
 require 'active_record'
 require 'database_cleaner'
 require 'erb'
 require 'yaml'
 
 # Basic classes for testing
-
-class ::ApplicationJob < ::ActiveJob::Base
-end
 
 class ::ApplicationRecord < ::ActiveRecord::Base
   self.abstract_class = true

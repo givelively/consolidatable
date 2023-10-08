@@ -28,7 +28,6 @@ Gem::Specification.new do |spec|
     ]
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activejob', '>= 3.2.0'
   spec.add_dependency 'activerecord', '>= 3.2.0'
   spec.add_dependency 'activesupport', '>= 3.2.0'
   spec.add_dependency 'railties', '>= 3.2.0'

@@ -103,14 +103,6 @@ If you need to `.count` the query, you must use `.count(:all)`.
 ## Calculating the new value
 Using the default `InlineFetcher`, Consolidatable computes the requested value if the cache is stale or doesn't exist yet. In those cases **_Consolidatable will attempt to write to the database_**, even though you are calling a getter.
 
-There is a fetcher called `BackgroundFetcher` that provides the cached value or nil and will not attempt to write to the database. Stale or nonexistent values will be refreshed in the background, by triggering an ActiveJob.
-
-To change the fetcher, use
-```ruby
-consolidates :very_expensive_value, fetcher: BackgroundFetcher
-```
-or change the default fetcher in `config/initializers/consolidatable.rb`.
-
 ## Contributing
 
 ### Setup
