@@ -71,6 +71,8 @@ module Consolidatable
 
       conditions.each do |field, value|
         as = "consolidated_#{field}"
+        raise ArgumentError, "#{field} is not a consolidated field" unless @@consolidate_methods.include?(as)
+
         table_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
         type = consolidations_config[as][:type]
 
@@ -83,28 +85,28 @@ module Consolidatable
             case operator.to_sym
             when :gt, :greater_than
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].gt(operand))
+              scope = scope.where(table_alias["#{type}_value"].gt(operand))
             when :gte, :greater_than_or_equal_to
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].gteq(operand))
+              scope = scope.where(table_alias["#{type}_value"].gteq(operand))
             when :lt, :less_than
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].lt(operand))
+              scope = scope.where(table_alias["#{type}_value"].lt(operand))
             when :lte, :less_than_or_equal_to
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].lteq(operand))
+              scope = scope.where(table_alias["#{type}_value"].lteq(operand))
             when :not_eq, :not_equal_to
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where.not(table_alias[:"#{type}_value"].eq(operand))
+              scope = scope.where.not(table_alias["#{type}_value"].eq(operand))
             when :eq, :equal_to
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].eq(operand))
+              scope = scope.where(table_alias["#{type}_value"].eq(operand))
             when :in
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].in(operand))
+              scope = scope.where(table_alias["#{type}_value"].in(operand))
             when :not_in
               scope = scope.where(table_alias[:var_name].eq(as))
-              scope = scope.where(table_alias[:"#{type}_value"].not_in(operand))
+              scope = scope.where(table_alias["#{type}_value"].not_in(operand))
             when :null
               if operand
                 # For null values, we either want no consolidation record or a null value
@@ -147,8 +149,6 @@ module Consolidatable
     def where_consolidated_lte(field, value)
       where_consolidated(field => { lte: value })
     end
-
-    private
 
     def consolidations_config
       @consolidations_config ||= {}
