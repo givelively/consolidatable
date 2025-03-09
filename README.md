@@ -100,6 +100,55 @@ Will provide you the five nonprofits with the highest (cached) values for `total
 
 If you need to `.count` the query, you must use `.count(:all)`.
 
+## Filtering Consolidated Values
+
+The gem provides a flexible filtering API similar to ActiveRecord's `where` clause. You can filter records based on their consolidated values using various comparison operators.
+
+### Basic Usage
+
+```ruby
+# Simple equality
+User.where_consolidated(avg_order_value: 100.0)
+
+# Comparison operators
+User.where_consolidated(avg_order_value: { gt: 100.0 })
+User.where_consolidated(avg_order_value: { lt: 50.0 })
+User.where_consolidated(total_orders: { gte: 10 })
+User.where_consolidated(lifetime_value: { lte: 1000.0 })
+
+# Multiple conditions
+User.where_consolidated(
+  avg_order_value: { gt: 100.0 },
+  total_orders: { gte: 10 }
+)
+
+# Null value handling
+User.where_consolidated(avg_order_value: { null: true })  # Find users with no avg_order_value
+User.where_consolidated(avg_order_value: { null: false }) # Find users with any avg_order_value
+```
+
+### Convenience Methods
+
+For common comparisons, the following shorthand methods are available:
+
+```ruby
+User.where_consolidated_gt(:avg_order_value, 100.0)  # Greater than
+User.where_consolidated_gte(:avg_order_value, 100.0) # Greater than or equal to
+User.where_consolidated_lt(:avg_order_value, 50.0)   # Less than
+User.where_consolidated_lte(:avg_order_value, 50.0)  # Less than or equal to
+```
+
+### Chainability
+
+All filtering methods return an ActiveRecord::Relation, so they can be chained with other scopes:
+
+```ruby
+User
+  .where(active: true)
+  .where_consolidated(avg_order_value: { gt: 100.0 })
+  .order(created_at: :desc)
+```
+
 ## Calculating the new value
 Using the default `InlineFetcher`, Consolidatable computes the requested value if the cache is stale or doesn't exist yet. In those cases **_Consolidatable will attempt to write to the database_**, even though you are calling a getter.
 
