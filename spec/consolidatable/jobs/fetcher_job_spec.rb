@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Consolidatable::FetcherJob do
-  subject(:perform) { job.perform(params) }
+  subject(:perform) { job.perform(**params) }
 
   let(:job) { described_class.new }
   let(:child) { Child.create }
