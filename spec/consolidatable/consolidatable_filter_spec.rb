@@ -98,4 +98,3 @@ RSpec.describe Consolidatable do
     end
   end
 end
-

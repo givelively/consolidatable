@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Consolidatable
+  # rubocop:disable Metrics/ModuleLength
   module Base
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
@@ -13,6 +14,15 @@ module Consolidatable
 
       @@consolidate_methods ||= []
       @@consolidate_methods << as
+
+      @consolidations_config ||= {}
+      @consolidations_config[as] = {
+        type: type,
+        not_older_than: not_older_than,
+        fetcher: fetcher,
+        write_wrapper: write_wrapper,
+        computer: computer
+      }
 
       send(
         :scope,
@@ -62,7 +72,7 @@ module Consolidatable
       conditions.each do |field, value|
         as = "consolidated_#{field}"
         table_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
-        type = Consolidatable.config.type
+        type = consolidations_config[as][:type]
 
         # Join with the consolidation table if not already joined
         scope = scope.send(:"with_#{as}")
@@ -72,31 +82,48 @@ module Consolidatable
           value.each do |operator, operand|
             case operator.to_sym
             when :gt, :greater_than
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].gt(operand))
             when :gte, :greater_than_or_equal_to
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].gteq(operand))
             when :lt, :less_than
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].lt(operand))
             when :lte, :less_than_or_equal_to
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].lteq(operand))
             when :not_eq, :not_equal_to
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where.not(table_alias[:"#{type}_value"].eq(operand))
             when :eq, :equal_to
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].eq(operand))
             when :in
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].in(operand))
             when :not_in
+              scope = scope.where(table_alias[:var_name].eq(as))
               scope = scope.where(table_alias[:"#{type}_value"].not_in(operand))
             when :null
               if operand
-                scope = scope.where(table_alias[:"#{type}_value"].eq(nil))
+                # For null values, we either want no consolidation record or a null value
+                scope = scope.where(
+                  table_alias[:id].eq(nil).or(
+                    table_alias[:var_name].eq(as).and(
+                      table_alias[:"#{type}_value"].eq(nil)
+                    )
+                  )
+                )
               else
+                scope = scope.where(table_alias[:var_name].eq(as))
                 scope = scope.where.not(table_alias[:"#{type}_value"].eq(nil))
               end
             end
           end
         else
           # Simple equality when just a value is provided
+          scope = scope.where(table_alias[:var_name].eq(as))
           scope = scope.where(table_alias[:"#{type}_value"].eq(value))
         end
       end
@@ -121,8 +148,14 @@ module Consolidatable
       where_consolidated(field => { lte: value })
     end
 
-    
+    private
+
+    def consolidations_config
+      @consolidations_config ||= {}
+    end
+
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
   end
+  # rubocop:enable Metrics/ModuleLength
 end
