@@ -2,6 +2,8 @@
 
 module Consolidatable
   module Base
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def consolidates(computer, options = {})
       as = options[:as]&.id2name || "consolidated_#{computer}"
       type = options[:type] || Consolidatable.config.type
@@ -31,11 +33,11 @@ module Consolidatable
                     consolidations_alias[:consolidatable_id]
                       .eq(consolidatables_arel[:id])
                       .and(consolidations_alias[:consolidatable_type].eq(klass))
+                      .and(consolidations_alias[:var_name].eq(as))
+                      .and(consolidations_alias[:var_type].eq(type))
                   )
                   .join_sources
               )
-              .where(consolidations_alias[:var_name].eq(as))
-              .where(consolidations_alias[:var_type].eq(type))
           end
         )
       )
@@ -53,5 +55,7 @@ module Consolidatable
           .value
       end
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
   end
 end
