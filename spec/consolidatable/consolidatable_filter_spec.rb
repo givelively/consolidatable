@@ -30,7 +30,7 @@ RSpec.describe Consolidatable do
       child1.consolidated_heaviest_present
       allow(present).to receive(:heaviest_present).and_return(15.0)
       child2.consolidated_heaviest_present
-      allow(present).to receive(:heaviest_present).and_return(5.0)
+      allow(present).to receive(:heaviest_present).and_return(13.0)
       child3.consolidated_heaviest_present
     end
 
