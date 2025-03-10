@@ -6,8 +6,8 @@ RSpec.describe Consolidatable do
   end
 
   before do
-    Child.send(:consolidates, :avg_price)
-    Child.send(:consolidates, :heaviest_present)
+    Child.consolidates(:avg_price)
+    Child.consolidates(:heaviest_present)
   end
 
   describe 'using the scope' do

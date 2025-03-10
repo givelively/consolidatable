@@ -1,17 +1,29 @@
 # frozen_string_literal: true
 
 module Consolidatable
-  include Configurable
+  module Configuration
+    extend ActiveSupport::Concern
 
-  class Configuration
-    attr_accessor :not_older_than,
-                  :fetcher,
-                  :type
+    included do
+      class_attribute :consolidate_methods, default: []
+    end
 
-    def initialize
-      @not_older_than = 1.hour
-      @type = :integer
-      @fetcher = InlineFetcher
+    class_methods do
+      def consolidations_config
+        @consolidations_config ||= {}
+      end
+
+      private
+
+      def configure_consolidation(as, type:, not_older_than:, fetcher:, write_wrapper:, computer:)
+        consolidations_config[as] = {
+          type: type,
+          not_older_than: not_older_than,
+          fetcher: fetcher,
+          write_wrapper: write_wrapper,
+          computer: computer
+        }
+      end
     end
   end
 end
