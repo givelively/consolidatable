@@ -11,17 +11,19 @@ commands:
         default: "6.0"
     steps:
       - run:
-          name: Configure Bundler
+          name: Install Bundler
           command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-            source $BASH_ENV
-            gem install bundler -v $BUNDLER_VERSION
+            # Install bundler at the latest stable version
+            gem install bundler
       - run:
-          name: Install Rails Version
+          name: Install Specific Rails Version
           command: |
-            bundle remove rails
+            # Remove any existing rails gem and add the requested version.
+            bundle remove rails || true
             bundle add rails --version "~> << parameters.rails-version >>"
-      - ruby/bundle-install
+      - run:
+          name: Bundle Install
+          command: bundle install --jobs=3 --retry=3
 
 executors:
   ruby-postgres:
@@ -55,8 +57,17 @@ jobs:
       ruby-version: << parameters.ruby-version >>
     steps:
       - checkout
+      - run:
+          name: Setup Database Configuration
+          command: |
+            echo "Copying example database configuration"
+            cp spec/database/database/database.example.yml config/database.yml
       - install-dependencies:
           rails-version: << parameters.rails-version >>
+      - run:
+          name: Load Database Schema
+          command: |
+            bundle exec rake db:schema:load
       - run:
           name: Run Tests
           command: |
@@ -76,7 +87,6 @@ workflows:
               ruby-version: ["2.7.5", "3.0.6", "3.1.4", "3.2.3"]
               rails-version: ["6.0", "6.1", "7.0", "7.1"]
             exclude:
-              # Exclude incompatible Ruby/Rails combinations
+              # Exclude incompatible Ruby/Rails combinations if required.
               - ruby-version: "2.7.5"
                 rails-version: "7.1"
-
