@@ -1,0 +1,82 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@2.1
+
+commands:
+  install-dependencies:
+    parameters:
+      rails-version:
+        type: string
+        default: "6.0"
+    steps:
+      - run:
+          name: Configure Bundler
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler -v $BUNDLER_VERSION
+      - run:
+          name: Install Rails Version
+          command: |
+            bundle remove rails
+            bundle add rails --version "~> << parameters.rails-version >>"
+      - ruby/bundle-install
+
+executors:
+  ruby-postgres:
+    parameters:
+      ruby-version:
+        type: string
+    docker:
+      - image: cimg/ruby:<< parameters.ruby-version >>-node
+      - image: cimg/postgres:14.2
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: consolidatable_test
+          POSTGRES_PASSWORD: ""
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      PGHOST: 127.0.0.1
+      PGUSER: postgres
+      RAILS_ENV: test
+    working_directory: ~/repo
+
+jobs:
+  test:
+    parameters:
+      ruby-version:
+        type: string
+      rails-version:
+        type: string
+    executor:
+      name: ruby-postgres
+      ruby-version: << parameters.ruby-version >>
+    steps:
+      - checkout
+      - install-dependencies:
+          rails-version: << parameters.rails-version >>
+      - run:
+          name: Run Tests
+          command: |
+            bundle exec rake
+      - run:
+          name: Run RuboCop
+          command: |
+            bundle exec rubocop
+
+workflows:
+  version: 2
+  test-matrix:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              ruby-version: ["2.7.5", "3.0.6", "3.1.4", "3.2.3"]
+              rails-version: ["6.0", "6.1", "7.0", "7.1"]
+            exclude:
+              # Exclude incompatible Ruby/Rails combinations
+              - ruby-version: "2.7.5"
+                rails-version: "7.1"
+
