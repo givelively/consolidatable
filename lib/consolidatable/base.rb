@@ -61,6 +61,11 @@ module Consolidatable
       where_consolidated(field => { lte: value })
     end
 
+    def counting?
+      @calculations&.any? { |_, operation| operation == :count } ||
+        all.arel.projections.any? { |projection| projection.to_s.match?(/\bCOUNT\s*\(/i) }
+    end
+
     private
 
     def setup_scopes(as, type)
@@ -68,11 +73,17 @@ module Consolidatable
         :"with_#{as}",
         lambda do
           consolidatables_arel = arel_table
-          consolidations_alias =
-            Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
+          consolidations_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
 
-          select(consolidatables_arel[Arel.star])
-            .select(consolidations_alias[:"#{type}_value"].as(as))
+          select_statement = if select_values.empty?
+                               [consolidatables_arel[Arel.star]]
+                             else
+                               select_values
+                             end
+
+          select_statement << consolidations_alias[:"#{type}_value"].as(as) unless counting?
+
+          select(select_statement)
             .includes(:consolidations)
             .joins(
               consolidatables_arel
