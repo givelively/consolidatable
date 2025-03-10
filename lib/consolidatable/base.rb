@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module Consolidatable
-  # rubocop:disable Metrics/ModuleLength
   module Base
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def consolidates(computer, options = {})
       as = options[:as]&.id2name || "consolidated_#{computer}"
       type = options[:type] || Consolidatable.config.type
@@ -12,8 +9,8 @@ module Consolidatable
       fetcher = options[:fetcher] || Consolidatable.config.fetcher
       write_wrapper = options[:write_wrapper]
 
-      @@consolidate_methods ||= []
-      @@consolidate_methods << as
+      @consolidate_methods ||= []
+      @consolidate_methods << as
 
       @consolidations_config ||= {}
       @consolidations_config[as] = {
@@ -24,46 +21,8 @@ module Consolidatable
         computer: computer
       }
 
-      send(
-        :scope,
-        :"with_#{as}",
-        (
-          lambda do
-            consolidatables_arel = klass.arel_table
-            consolidations_alias =
-              Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
-
-            select(consolidatables_arel[Arel.star])
-              .select(consolidations_alias[:"#{type}_value"].as(as))
-              .includes(:consolidations)
-              .joins(
-                consolidatables_arel
-                  .join(consolidations_alias, Arel::Nodes::OuterJoin)
-                  .on(
-                    consolidations_alias[:consolidatable_id]
-                      .eq(consolidatables_arel[:id])
-                      .and(consolidations_alias[:consolidatable_type].eq(klass))
-                      .and(consolidations_alias[:var_name].eq(as))
-                      .and(consolidations_alias[:var_type].eq(type))
-                  )
-                  .join_sources
-              )
-          end
-        )
-      )
-
-      define_method(as) do
-        fetcher
-          .new(
-            owner: self,
-            variable: Variable.new(name: as, type: type),
-            computer: computer,
-            not_older_than: not_older_than,
-            write_wrapper: write_wrapper
-          )
-          .call
-          .value
-      end
+      setup_scopes(as, type)
+      define_consolidation_method(as)
     end
 
     def where_consolidated(conditions)
@@ -71,69 +30,20 @@ module Consolidatable
 
       conditions.each do |field, value|
         as = "consolidated_#{field}"
-        raise ArgumentError, "#{field} is not a consolidated field" unless @@consolidate_methods.include?(as)
+        raise ArgumentError, "#{field} is not a consolidated field" unless @consolidate_methods&.include?(as)
 
         table_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
-        type = consolidations_config[as][:type]
+        type = @consolidations_config[as][:type]
         var_name = table_alias[:var_name]
         type_value = table_alias["#{type}_value"]
 
-        # Join with the consolidation table if not already joined
         scope = scope.send(:"with_#{as}")
-
-        case value
-        when Hash
-          value.each do |operator, operand|
-            case operator.to_sym
-            when :gt, :greater_than
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.gt(operand))
-            when :gte, :greater_than_or_equal_to
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.gteq(operand))
-            when :lt, :less_than
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.lt(operand))
-            when :lte, :less_than_or_equal_to
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.lteq(operand))
-            when :not_eq, :not_equal_to
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where.not(type_value.eq(operand))
-            when :eq, :equal_to
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.eq(operand))
-            when :in
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.in(operand))
-            when :not_in
-              scope = scope.where(var_name.eq(as))
-              scope = scope.where(type_value.not_in(operand))
-            when :null
-              if operand
-                # For null values, we either want no consolidation record or a null value
-                scope = scope.where(
-                  table_alias[:id].eq(nil).or(
-                    var_name.eq(as).and(type_value.eq(nil))
-                  )
-                )
-              else
-                scope = scope.where(var_name.eq(as))
-                scope = scope.where.not(type_value.eq(nil))
-              end
-            end
-          end
-        else
-          # Simple equality when just a value is provided
-          scope = scope.where(var_name.eq(as))
-          scope = scope.where(type_value.eq(value))
-        end
+        scope = apply_conditions(scope, var_name, type_value, as, value)
       end
 
       scope
     end
 
-    # Convenience methods for common comparisons
     def where_consolidated_gt(field, value)
       where_consolidated(field => { gt: value })
     end
@@ -150,12 +60,104 @@ module Consolidatable
       where_consolidated(field => { lte: value })
     end
 
-    def consolidations_config
-      @consolidations_config ||= {}
+    private
+
+    def setup_scopes(as, type)
+      scope(
+        :"with_#{as}",
+        lambda do
+          consolidatables_arel = arel_table
+          consolidations_alias =
+            Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
+
+          select(consolidatables_arel[Arel.star])
+            .select(consolidations_alias[:"#{type}_value"].as(as))
+            .includes(:consolidations)
+            .joins(
+              consolidatables_arel
+                .join(consolidations_alias, Arel::Nodes::OuterJoin)
+                .on(
+                  consolidations_alias[:consolidatable_id]
+                    .eq(consolidatables_arel[:id])
+                    .and(consolidations_alias[:consolidatable_type].eq(name))
+                    .and(consolidations_alias[:var_name].eq(as))
+                    .and(consolidations_alias[:var_type].eq(type))
+                )
+                .join_sources
+            )
+        end
+      )
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
+    def define_consolidation_method(as)
+      config = @consolidations_config[as]
+
+      define_method(as) do
+        fetcher = config[:fetcher]
+        type = config[:type]
+        write_wrapper = config[:write_wrapper]
+        computer = config[:computer]
+        not_older_than = config[:not_older_than]
+
+        value = fetcher.new(
+          owner: self,
+          variable: Variable.new(name: as, type: type),
+          computer: computer,
+          not_older_than: not_older_than,
+          write_wrapper: write_wrapper
+        ).call.value
+
+        value
+      end
+    end
+
+    def apply_conditions(scope, var_name, type_value, as, value)
+      case value
+      when Hash
+        apply_operator_conditions(scope, var_name, type_value, as, value)
+      else
+        scope.where(var_name.eq(as)).where(type_value.eq(value))
+      end
+    end
+
+    def apply_operator_conditions(scope, var_name, type_value, as, conditions)
+      conditions.each do |operator, operand|
+        scope = case operator.to_sym
+               when :gt, :greater_than
+                 scope.where(var_name.eq(as)).where(type_value.gt(operand))
+               when :gte, :greater_than_or_equal_to
+                 scope.where(var_name.eq(as)).where(type_value.gteq(operand))
+               when :lt, :less_than
+                 scope.where(var_name.eq(as)).where(type_value.lt(operand))
+               when :lte, :less_than_or_equal_to
+                 scope.where(var_name.eq(as)).where(type_value.lteq(operand))
+               when :not_eq, :not_equal_to
+                 scope.where(var_name.eq(as)).where.not(type_value.eq(operand))
+               when :eq, :equal_to
+                 scope.where(var_name.eq(as)).where(type_value.eq(operand))
+               when :in
+                 scope.where(var_name.eq(as)).where(type_value.in(operand))
+               when :not_in
+                 scope.where(var_name.eq(as)).where(type_value.not_in(operand))
+               when :null
+                 apply_null_condition(scope, var_name, type_value, as, operand)
+               else
+                 scope
+               end
+      end
+      scope
+    end
+
+    def apply_null_condition(scope, var_name, type_value, as, want_null)
+      if want_null
+        scope.where(
+          var_name.eq(nil).or(
+            var_name.eq(as).and(type_value.eq(nil))
+          )
+        )
+      else
+        scope.where(var_name.eq(as)).where.not(type_value.eq(nil))
+      end
+    end
   end
-  # rubocop:enable Metrics/ModuleLength
 end
