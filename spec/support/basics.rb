@@ -39,6 +39,11 @@ class Child < ApplicationRecord
   def oldest_present
     Present.oldest_present(self)
   end
+
+  def discounted_presents_count
+    Present.discounted_presents_count(self)
+  end
+
 end
 
 class Present < ApplicationRecord
@@ -53,4 +58,6 @@ class Present < ApplicationRecord
   def self.all_cute?(obj); end
 
   def self.oldest_present(obj); end
+
+  def self.discounted_presents_count(obj); end
 end

@@ -96,5 +96,41 @@ RSpec.describe Consolidatable do
         expect(result).to contain_exactly(child2)
       end
     end
+
+    context 'with count-related queries' do
+      before do
+        Child.send(:consolidates, :discounted_presents_count, as: :discount_count)
+        allow(present).to receive(:discounted_presents_count).and_return(5)
+      end
+
+      it 'handles actual COUNT queries' do
+        expect do
+          Child.where_consolidated(discount_count: { gt: 3 }).count
+        end.not_to raise_error
+      end
+
+      it 'properly handles columns with "count" in the name' do
+        # This should include the column in the SELECT clause
+        query = Child.where_consolidated(discount_count: { gt: 3 })
+        expect(query.to_sql).to include('AS discount_count')
+      end
+
+      it 'distinguishes between COUNT queries and count-named columns' do
+        # Mock the calculating_count? method to verify its logic
+        counter = 0
+        allow_any_instance_of(Child.singleton_class).to receive(:calculating_count?) do
+          counter += 1
+          counter == 1 # True for the COUNT query, false for the regular select
+        end
+
+        # Should trigger calculating_count? = true
+        Child.where_consolidated(discount_count: { gt: 3 }).count
+
+        # Should trigger calculating_count? = false
+        Child.where_consolidated(discount_count: { gt: 3 }).to_a
+
+        expect(counter).to eq(2)
+      end
+    end
   end
 end

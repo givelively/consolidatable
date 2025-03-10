@@ -61,6 +61,17 @@ module Consolidatable
       where_consolidated(field => { lte: value })
     end
 
+    def counting?
+      current_scope = all
+      return true if current_scope.instance_variable_get(:@calculations)&.any? { |_, op| op == :count }
+
+      current_scope.arel.projections.any? do |projection|
+        projection.is_a?(Arel::Nodes::Count) || (projection.respond_to?(:to_sql) && proj.to_sql =~ /\bCOUNT\s*\(/i)
+      end
+    rescue
+      false
+    end
+
     private
 
     def setup_scopes(as, type)
@@ -68,11 +79,20 @@ module Consolidatable
         :"with_#{as}",
         lambda do
           consolidatables_arel = arel_table
-          consolidations_alias =
-            Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
+          consolidations_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
 
-          select(consolidatables_arel[Arel.star])
-            .select(consolidations_alias[:"#{type}_value"].as(as))
+          if counting?
+            base_scope = select_values.present? ? select(select_values) : all
+          else
+            base_scope = if select_values.empty?
+                           select(consolidatables_arel[Arel.star])
+                         else
+                           select(select_values)
+                         end
+            base_scope = base_scope.select(consolidations_alias[:"#{type}_value"].as(as))
+					end
+
+          base_scope
             .includes(:consolidations)
             .joins(
               consolidatables_arel
