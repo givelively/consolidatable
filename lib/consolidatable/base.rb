@@ -30,7 +30,10 @@ module Consolidatable
 
       conditions.each do |field, value|
         as = "consolidated_#{field}"
-        raise ArgumentError, "#{field} is not a consolidated field" unless @consolidate_methods&.include?(as)
+        unless @consolidate_methods&.include?(as)
+          raise ArgumentError,
+                "#{field} is not a consolidated field"
+        end
 
         table_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
         type = @consolidations_config[as][:type]
@@ -123,27 +126,27 @@ module Consolidatable
     def apply_operator_conditions(scope, var_name, type_value, as, conditions)
       conditions.each do |operator, operand|
         scope = case operator.to_sym
-               when :gt, :greater_than
-                 scope.where(var_name.eq(as)).where(type_value.gt(operand))
-               when :gte, :greater_than_or_equal_to
-                 scope.where(var_name.eq(as)).where(type_value.gteq(operand))
-               when :lt, :less_than
-                 scope.where(var_name.eq(as)).where(type_value.lt(operand))
-               when :lte, :less_than_or_equal_to
-                 scope.where(var_name.eq(as)).where(type_value.lteq(operand))
-               when :not_eq, :not_equal_to
-                 scope.where(var_name.eq(as)).where.not(type_value.eq(operand))
-               when :eq, :equal_to
-                 scope.where(var_name.eq(as)).where(type_value.eq(operand))
-               when :in
-                 scope.where(var_name.eq(as)).where(type_value.in(operand))
-               when :not_in
-                 scope.where(var_name.eq(as)).where(type_value.not_in(operand))
-               when :null
-                 apply_null_condition(scope, var_name, type_value, as, operand)
-               else
-                 scope
-               end
+                when :gt, :greater_than
+                  scope.where(var_name.eq(as)).where(type_value.gt(operand))
+                when :gte, :greater_than_or_equal_to
+                  scope.where(var_name.eq(as)).where(type_value.gteq(operand))
+                when :lt, :less_than
+                  scope.where(var_name.eq(as)).where(type_value.lt(operand))
+                when :lte, :less_than_or_equal_to
+                  scope.where(var_name.eq(as)).where(type_value.lteq(operand))
+                when :not_eq, :not_equal_to
+                  scope.where(var_name.eq(as)).where.not(type_value.eq(operand))
+                when :eq, :equal_to
+                  scope.where(var_name.eq(as)).where(type_value.eq(operand))
+                when :in
+                  scope.where(var_name.eq(as)).where(type_value.in(operand))
+                when :not_in
+                  scope.where(var_name.eq(as)).where(type_value.not_in(operand))
+                when :null
+                  apply_null_condition(scope, var_name, type_value, as, operand)
+                else
+                  scope
+                end
       end
       scope
     end
