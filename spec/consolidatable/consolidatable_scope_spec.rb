@@ -109,7 +109,6 @@ RSpec.describe Consolidatable do
                              .order(consolidated_heaviest_present: :asc)
 
         expect(weight_sorted).to eq([child3, child1, child2])
-
       end
 
       it 'does not mix up the two consolidation tables' do

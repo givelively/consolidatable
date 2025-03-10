@@ -23,7 +23,7 @@ end
 require 'rails'
 require 'erb'
 
-task :environment do
+task environment: :environment do
   database_config_file = File.join(__dir__, 'spec/database/database.yml')
 
   database_config_raw = File.read(database_config_file)

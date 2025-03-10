@@ -14,7 +14,7 @@ RSpec.describe Consolidatable do
     let!(:child1) { Child.create(name: 'child1') }
     let!(:child2) { Child.create(name: 'child2') }
     let!(:child3) { Child.create(name: 'child3') }
-    let!(:child4) { Child.create(name: 'child4') }  # No consolidation values
+    let!(:child4) { Child.create(name: 'child4') } # No consolidation values
 
     before do
       # Set up avg_price consolidations
