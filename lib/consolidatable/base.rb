@@ -29,19 +29,17 @@ module Consolidatable
       scope = all
 
       conditions.each do |field, value|
-        as = "consolidated_#{field}"
-        unless @consolidate_methods&.include?(as)
-          raise ArgumentError,
-                "#{field} is not a consolidated field"
+        unless @consolidate_methods&.include?(field.to_s)
+          raise ArgumentError, "#{field} is not a consolidated field"
         end
 
-        table_alias = Consolidatable::Consolidation.arel_table.alias("#{as}_alias")
-        type = @consolidations_config[as][:type]
+        table_alias = Consolidatable::Consolidation.arel_table.alias("#{field}_alias")
+        type = @consolidations_config[field.to_s][:type]
         var_name = table_alias[:var_name]
         type_value = table_alias["#{type}_value"]
 
-        scope = scope.send(:"with_#{as}")
-        scope = apply_conditions(scope, var_name, type_value, as, value)
+        scope = scope.send(:"with_#{field}")
+        scope = apply_conditions(scope, var_name, type_value, field, value)
       end
 
       scope
