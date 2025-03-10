@@ -4,5 +4,5 @@ test:
   encoding: unicode
   database: consolidatable_test
   pool: 100
-  username: postgres
-  password:
+  username: tim
+  password: c5mpk9

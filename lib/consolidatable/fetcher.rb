@@ -3,6 +3,8 @@
 module Consolidatable
   class Fetcher
     def initialize(owner:, variable:, computer:, not_older_than:, write_wrapper: nil)
+      warn "[DEPRECATION] `#{self.class}` is deprecated and will be removed in version 1.0. " \
+           "Use Consolidatable::Strategies::FetcherStrategy instead."
       @owner = owner
       @variable = variable
       @computer = computer
@@ -14,7 +16,7 @@ module Consolidatable
       raise NotImplementedError
     end
 
-    private
+    protected
 
     def computed_value
       @computed_value ||= @owner.send(@computer)

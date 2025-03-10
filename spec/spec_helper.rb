@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'bundler/setup'
+require 'consolidatable'
+
 ENV['RAILS_ENV'] = 'test'
 
 require 'simplecov'

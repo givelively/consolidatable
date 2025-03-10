@@ -4,17 +4,30 @@ require 'active_record'
 require 'active_job'
 require 'rails/railtie'
 
-require 'consolidatable/base'
-require 'consolidatable/class_extensions'
+require 'active_support'
+require 'active_support/core_ext'
+
+require 'consolidatable/version'
 require 'consolidatable/configurable'
 require 'consolidatable/configuration'
 require 'consolidatable/consolidation'
+require 'consolidatable/variable'
+
+# Load base strategy first
+require 'consolidatable/fetcher_strategy'
+
+# Load concrete strategies
+require 'consolidatable/strategies/inline_strategy'
+require 'consolidatable/strategies/background_strategy'
+
+# Load legacy fetcher classes
 require 'consolidatable/fetcher'
 require 'consolidatable/inline_fetcher'
 require 'consolidatable/background_fetcher'
+
+# Load remaining files
+require 'consolidatable/base'
 require 'consolidatable/jobs/fetcher_job'
-require 'consolidatable/variable'
-require 'consolidatable/version'
 
 module Consolidatable
   class << self
