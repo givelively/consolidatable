@@ -12,4 +12,3 @@ module Consolidatable
     end
   end
 end
-

@@ -5,7 +5,7 @@ module Consolidatable
     def call
       warn "[DEPRECATION] `#{self.class}` is deprecated and will be removed in version 1.0. " \
            'Use Consolidatable::BackgroundStrategy instead.'
-      
+
       BackgroundStrategy.new(
         owner: @owner,
         variable: @variable,

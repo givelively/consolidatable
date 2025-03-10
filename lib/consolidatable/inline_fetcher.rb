@@ -6,7 +6,7 @@ module Consolidatable
       warn "[DEPRECATION] `#{self.class}` is deprecated and will be removed in version 1.0. " \
            'Use Consolidatable::InlineStrategy instead.'
 
-      InlineStrategy.new(
+      Consolidatable::InlineStrategy.new(
         owner: @owner,
         variable: @variable,
         computer: @computer,

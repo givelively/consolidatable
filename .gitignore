@@ -13,6 +13,7 @@
 
 spec/dummy/log/
 spec/support/database.yml
+spec/database/database.yml
 
 # Used by dotenv library to load environment variables.
 # .env
