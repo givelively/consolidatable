@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
-database_config_file = File.join(__dir__, '../database/database.yml')
+require 'active_record'
 
-ActiveRecord::Base.belongs_to_required_by_default = true if ActiveRecord.version.version >= '5'
-database_config_raw = File.read(database_config_file)
-database_config_yaml = ERB.new(database_config_raw).result
-database_config = YAML.safe_load(database_config_yaml)
-ActiveRecord::Base.establish_connection(database_config['test'])
-
-RSpec.configure do |config|
-  config.before(:suite) { DatabaseCleaner.strategy = :truncation }
-
-  config.before { DatabaseCleaner.clean }
+def db_config
+  {
+    adapter: 'postgresql',
+    host: ENV.fetch('POSTGRES_HOST', 'localhost'),
+    database: ENV.fetch('POSTGRES_DB', 'consolidatable_test'),
+    username: ENV.fetch('POSTGRES_USER', 'postgres'),
+    password: ENV.fetch('POSTGRES_PASSWORD', 'postgres'),
+    encoding: 'unicode',
+    pool: ENV.fetch('POSTGRES_POOL', 5).to_i,
+    min_messages: 'warning'
+  }
 end
+
+ActiveRecord::Base.establish_connection(db_config)
