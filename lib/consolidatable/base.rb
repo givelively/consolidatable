@@ -3,7 +3,21 @@
 module Consolidatable
   module Base
     def consolidates(computer, options = {})
-      as = options[:as]&.id2name || "consolidated_#{computer}"
+      unless computer.is_a?(Symbol) || computer.is_a?(String) || computer.respond_to?(:call)
+        raise ArgumentError,
+              'computer must be a method name (Symbol/String) or a callable object (lambda/proc)'
+      end
+
+      if computer.respond_to?(:call) && !options[:as]
+        raise ArgumentError, 'The :as option is required when computer is a callable object'
+      end
+
+      as = if computer.respond_to?(:call)
+             options[:as].to_s
+           else
+             options[:as]&.id2name || "consolidated_#{computer}"
+           end
+
       type = options[:type] || Consolidatable.config.type
       not_older_than = options[:not_older_than] || Consolidatable.config.not_older_than
       fetcher = options[:fetcher] || Consolidatable.config.fetcher
