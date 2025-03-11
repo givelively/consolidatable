@@ -3,6 +3,7 @@
 source 'http://rubygems.org'
 
 gem 'database_cleaner', '~> 2.0.1'
+gem 'dotenv'
 gem 'factory_bot', '~> 6.2.1'
 gem 'pg', '~> 1.4.1'
 gem 'prettier', '~> 3.1.2'

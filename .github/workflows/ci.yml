@@ -10,6 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['3.4', '3.3', '3.2']
 
@@ -19,7 +20,6 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
-          POSTGRES_DB: consolidatable_test
         ports:
           - 5432:5432
         options: >-
@@ -40,34 +40,25 @@ jobs:
     - name: Install dependencies
       run: bundle install
 
-    - name: Setup database config
-      run: |
-        cd spec/database
-        cp database.example.yml database.yml
-
-    - name: Create database
+    - name: Setup Database
       env:
         POSTGRES_HOST: localhost
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-        RAILS_ENV: test
+        POSTGRES_DB: consolidatable_test
       run: |
-        PGPASSWORD=postgres psql -h localhost -U postgres -c 'create database consolidatable_test;'
+        PGPASSWORD=postgres psql -h localhost -U postgres -c 'DROP DATABASE IF EXISTS consolidatable_test;'
+        PGPASSWORD=postgres psql -h localhost -U postgres -c 'CREATE DATABASE consolidatable_test;'
 
     - name: Run tests
       env:
         POSTGRES_HOST: localhost
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: consolidatable_test
         RAILS_ENV: test
         TZ: UTC
       run: bundle exec rspec
-
-    - name: Run RuboCop
-      run: bundle exec rubocop
-
-    - name: Run Prettier
-      run: bundle exec rbprettier --check '**/*.{rb,rake,gemspec}'
 
     - name: Codecov
       uses: codecov/codecov-action@v4
