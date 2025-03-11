@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.license = 'MIT'
   spec.platform = Gem::Platform::RUBY
 
-  spec.required_ruby_version = '>= 2.7.5'
+  spec.required_ruby_version = '>= 3.2.0'
   spec.extra_rdoc_files = ['README.md']
   spec.files =
     Dir[
@@ -29,17 +29,17 @@ Gem::Specification.new do |spec|
     ]
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activejob', '>= 3.2.0'
-  spec.add_dependency 'activerecord', '>= 3.2.0'
-  spec.add_dependency 'activesupport', '>= 3.2.0'
-  spec.add_dependency 'railties', '>= 3.2.0'
+  spec.add_dependency 'activejob', '>= 7.0.8.7'
+  spec.add_dependency 'activerecord', '>= 7.0.8.7'
+  spec.add_dependency 'activesupport', '>= 7.0.8.7'
+  spec.add_dependency 'railties', '>= 7.0.8.7'
 
   spec.add_development_dependency 'codecov', '~> 0.1'
   spec.add_development_dependency 'database_cleaner', '~> 2.0.1'
   spec.add_development_dependency 'factory_bot', '~> 6.2.1'
   spec.add_development_dependency 'pg', '~> 1.4.1'
   spec.add_development_dependency 'prettier', '~> 3.1.2'
-  spec.add_development_dependency 'rails', '~> 6.0.5.1'
+  spec.add_development_dependency 'rails', '~> 7.0.8.7'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.6'
   spec.add_development_dependency 'rspec-rails', '~> 5.1.2'
