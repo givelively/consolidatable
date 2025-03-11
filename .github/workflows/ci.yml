@@ -52,7 +52,8 @@ jobs:
         POSTGRES_PASSWORD: postgres
         RAILS_ENV: test
       run: |
-        PGPASSWORD=postgres psql -h localhost -U postgres -c 'create database consolidatable_test;'
+        PGPASSWORD=postgres psql -h localhost -U postgres -c 'DROP DATABASE IF EXISTS consolidatable_test;'
+        PGPASSWORD=postgres psql -h localhost -U postgres -c 'CREATE DATABASE consolidatable_test;'
 
     - name: Run tests
       env:
