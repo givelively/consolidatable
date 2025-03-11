@@ -1,40 +1,35 @@
-# Consolidatable v0.1.0
+# Consolidatable v0.2.0
 
-First public release of Consolidatable, a Ruby gem for precalculating and caching values in the database.
+## New Features
 
-## Features
-
-### Core Functionality
-- Precalculate and cache values in the database
-- Configurable cache duration
-- Support for multiple data types (integer, float, boolean, string, datetime)
-- Custom method naming
-- Scoping capabilities for queries
-- Flexible filtering API
-
-### New in 0.1.0
-- Lambda/Proc Support: Compute consolidated values using inline lambdas or procs
-- Comprehensive filtering API with comparison operators
-- Background job processing option
-- Type safety improvements
-
-## Installation
-
-Add to your Gemfile:
-```ruby
-gem 'consolidatable'
-```
-
-## Migration from pre-0.1.0
-
-If you were using the gem from git, update your Gemfile:
+### Lambda/Proc Support
+Added support for using lambdas and procs as consolidation computers. This allows for inline value calculations without needing to define separate methods:
 
 ```ruby
-# Before
-gem 'consolidatable', git: 'https://github.com/givelively/consolidatable.git'
+class User
+  include Consolidatable
+  
+  # Using a lambda with float type
+  consolidates ->(user) { user.orders.sum(:amount) },
+              as: :total_orders_amount,
+              type: :float
 
-# After
-gem 'consolidatable', '~> 0.1.0'
+  # Using a proc with boolean type
+  consolidates proc { |user| user.comments.count > 10 },
+              as: :frequent_commenter,
+              type: :boolean
+end
 ```
 
-No other changes are required - all existing functionality remains backward compatible.
+When using a lambda or proc:
+- The `:as` option is required to specify the consolidation method name
+- The callable receives the record instance as its argument
+- Make sure to specify the appropriate `:type` for the returned value
+- All other options (`:not_older_than`, `:fetcher`) work as normal
+
+### Requirements
+- Ruby 2.7 or higher
+- Rails 6.0 or higher
+
+### Migration from v0.1.0
+This release is fully backward compatible. No changes are required to existing code.
