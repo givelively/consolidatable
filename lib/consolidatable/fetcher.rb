@@ -17,7 +17,11 @@ module Consolidatable
     private
 
     def computed_value
-      @computed_value ||= @owner.send(@computer)
+      @computed_value ||= if @computer.respond_to?(:call)
+                            @computer.call(@owner)
+                          else
+                            @owner.send(@computer)
+                          end
     end
 
     def detect_consolidation
