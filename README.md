@@ -82,6 +82,34 @@ To change the name of that method use the `as` attribute (defining the method `c
 consolidates :very_expensive_value, as: :cheap_value
 ```
 
+### Lambda/Proc Support
+
+In addition to method names, you can use lambdas or procs to compute consolidated values. This is particularly useful for inline calculations or when you want to avoid creating a separate method:
+
+```ruby
+class User
+  include Consolidatable
+  
+  # Using a lambda - must provide :as option
+  consolidates ->(user) { user.orders.sum(:amount) },
+              as: :total_orders_amount,
+              type: :float
+
+  # Using a proc with custom refresh time
+  consolidates proc { |user| user.comments.count > 10 },
+              as: :frequent_commenter,
+              type: :boolean,
+              not_older_than: 1.day
+end
+```
+
+When using a lambda or proc:
+
+- The :as option is required to name the consolidation method
+- The callable receives the record instance as its argument
+- Specify the appropriate :type for the returned value
+- All other options (:not_older_than, :fetcher) work the same way
+
 ## Scope
 By default, Consolidatable provides a scope named after the new value. Below example provides the scope `with_total_amount_raised`
 ```ruby
