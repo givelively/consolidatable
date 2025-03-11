@@ -6,7 +6,8 @@ Gem::Specification.new do |spec|
   spec.name = 'consolidatable'
   spec.version = Consolidatable::VERSION
   spec.authors = ['Give Lively']
-  spec.summary = 'Consolidate and Cache'
+  spec.summary = 'Consolidate and cache ActiveRecord calculations'
+  spec.description = 'Consolidatable provides tooling to precalculate values and cache them in the database for a specified amount of time. Supports both method-based and lambda/proc-based calculations with type safety.'
   spec.homepage = 'https://github.com/givelively/consolidatable'
   spec.license = 'MIT'
   spec.platform = Gem::Platform::RUBY
