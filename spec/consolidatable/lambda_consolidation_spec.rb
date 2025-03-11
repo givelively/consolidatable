@@ -22,7 +22,7 @@ RSpec.describe Consolidatable do
       end
 
       it 'properly stores and executes the lambda' do
-        Child.send(:consolidates, example_lambda, as: :name_length)
+        Child.send(:consolidates, example_lambda, as: :name_length, type: :integer)
         child = Child.create(name: 'test_name')
 
         expect(child.name_length).to eq(9)
@@ -60,7 +60,7 @@ RSpec.describe Consolidatable do
       end
 
       it 'properly executes the proc' do
-        Child.send(:consolidates, example_proc, as: :uppercase_name)
+        Child.send(:consolidates, example_proc, as: :uppercase_name, type: :string)
         child = Child.create(name: 'test_name')
 
         expect(child.uppercase_name).to eq('TEST_NAME')
