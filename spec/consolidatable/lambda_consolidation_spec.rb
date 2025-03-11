@@ -67,4 +67,34 @@ RSpec.describe Consolidatable do
       end
     end
   end
+
+  context 'with different return types' do
+    it 'handles string values' do
+      str_proc = proc { |record| record.name.upcase }
+      Child.send(:consolidates, str_proc, as: :upper_name, type: :string)
+      child = Child.create(name: 'test')
+      expect(child.upper_name).to eq('TEST')
+    end
+
+    it 'handles integer values' do
+      int_proc = proc { |record| record.name.length }
+      Child.send(:consolidates, int_proc, as: :name_length, type: :integer)
+      child = Child.create(name: 'test')
+      expect(child.name_length).to eq(4)
+    end
+
+    it 'handles float values' do
+      float_proc = proc { |record| record.name.length * 1.5 }
+      Child.send(:consolidates, float_proc, as: :weighted_length, type: :float)
+      child = Child.create(name: 'test')
+      expect(child.weighted_length).to eq(6.0)
+    end
+
+    it 'handles boolean values' do
+      bool_proc = proc { |record| record.name.length > 5 }
+      Child.send(:consolidates, bool_proc, as: :long_name, type: :boolean)
+      child = Child.create(name: 'test')
+      expect(child.long_name).to be false
+    end
+  end
 end
