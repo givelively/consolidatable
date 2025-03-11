@@ -4,7 +4,8 @@ module Consolidatable
   module Base
     def consolidates(computer, options = {})
       unless computer.is_a?(Symbol) || computer.is_a?(String) || computer.respond_to?(:call)
-        raise ArgumentError, 'computer must be a method name (Symbol/String) or a callable object (lambda/proc)'
+        raise ArgumentError,
+              'computer must be a method name (Symbol/String) or a callable object (lambda/proc)'
       end
 
       if computer.respond_to?(:call) && !options[:as]

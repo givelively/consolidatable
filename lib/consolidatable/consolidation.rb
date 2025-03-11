@@ -26,11 +26,11 @@ module Consolidatable
     end
 
     def value
-      send("#{var_type}_value")
+      send(:"#{var_type}_value")
     end
 
     def value=(value)
-      send("#{var_type}_value=", value)
+      send(:"#{var_type}_value=", value)
     end
   end
 end
