@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-FileUtils.mkdir_p 'tmp'
-
 database_config_file = File.join(__dir__, '../database/database.yml')
 
 ActiveRecord::Base.belongs_to_required_by_default = true if ActiveRecord.version.version >= '5'

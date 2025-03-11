@@ -11,14 +11,13 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/givelively/consolidatable'
   spec.license = 'MIT'
   spec.platform = Gem::Platform::RUBY
-    spec.metadata = {
+  spec.metadata = {
     'rubygems_mfa_required' => 'true',
     'changelog_uri' => 'https://github.com/givelively/consolidatable/blob/main/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/givelively/consolidatable',
     'bug_tracker_uri' => 'https://github.com/givelively/consolidatable/issues',
-    'last_updated' => '2025-03-11 01:11:18 UTC'
+    'last_updated' => '2025-03-11 01:22:56 UTC'
   }
-
 
   spec.required_ruby_version = '>= 3.2.0'
   spec.extra_rdoc_files = ['README.md']
@@ -37,8 +36,8 @@ Gem::Specification.new do |spec|
     ]
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activejob', '>= 7.0.8.7'
-  spec.add_dependency 'activerecord', '>= 7.0.8.7'
-  spec.add_dependency 'activesupport', '>= 7.0.8.7'
-  spec.add_dependency 'railties', '>= 7.0.8.7'
+  spec.add_dependency 'activejob', '>= 7.1.0'
+  spec.add_dependency 'activerecord', '>= 7.1.0'
+  spec.add_dependency 'activesupport', '>= 7.1.0'
+  spec.add_dependency 'railties', '>= 7.1.0'
 end
